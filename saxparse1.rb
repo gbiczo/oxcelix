@@ -35,7 +35,6 @@ module Cellhelper
       coord = @xlcoords
     end
     ('A'..(coord.scan(/\p{Alpha}+|\p{Digit}+/u)[0])).to_a.length
-
   end
 
   def y(coord=nil)
@@ -132,9 +131,13 @@ end
 class Workbook
   include Cellhelper
   attr_accessor :sheetbase, :sheets, :sharedstrings
-  def initialize(filename)
+  def initialize(filename, options={})
+    # options is a collection of options that can be passed to Workbook.
+    # options may include:
+    #:copymerge (=> true/false) - merged cell will get the same content instead of being nil or empty
+    #:include (Ary) - an array of sheet names to be included
+    #:exclude (Ary) - an array of sheet names not to be processed
     require 'zip'
-    #mkdir tmp!!!
     @destination = 'tmp'
     FileUtils.mkdir(@destination)
     Zip::File.open(filename){ |zip_file|
@@ -147,7 +150,8 @@ class Workbook
     @sheets=[]
     @sheetbase={}
     @a=Ox::load_file(@destination+'/xl/workbook.xml')
-    sheetdata; commentsrel; shstrings;
+    
+    sheetdata(options[:include], options[:excude]); commentsrel; shstrings;
     @sheets.each do |x|
       sname="sheet#{x[:sheetId]}"
       @sheet = Xlsheet.new()
@@ -171,21 +175,54 @@ class Workbook
       x[:mergedcells] = @sheet.mergedcells
     end
     FileUtils.remove_dir(@destination, true)
-    matrixto(args)
+    matrixto(options[:copymerge])
   end
   
   private
-  def sheetdata
+  def sheetdata included_sheets, excluded_sheets=[]
     @a.locate("workbook/sheets/*").each do |x|
       @sheetbase[:name] = x[:name]
       @sheetbase[:sheetId] = x[:sheetId]
       @sheetbase[:relationId] = x[:"r:id"]
       @sheets << sheetbase
+      @sheets=
+
+**********************************************-
+a = [:egy, :ketto, :harom]
+b = [{:key1=>:elso, :key2=>:masodik, :key3=>:harmadik}
+  {:key1=>:egy, :key2=>:masodik, :key3=>:harmadik}
+  {:key1=>:elsodik, :key2=>:masodik, :key3=>:harom}] 
+
+a.each do |ex|
+  ef=b.detect{|d| d[:key3]==ex}
+  if !ef.nil?
+    puts "ex: #{ex}, ef:#{ef}"
+  end
+end
+
+**********************************************-
+
+      unless included_sheets.nil?
+        if !(included_sheets.detect{|a| a==@sheetbase[:name]}).nil?
+          @sheets << sheetbase
+        end
+      else
+        @sheets << sheetbase
+      end
+      unless excluded_sheets.nil?
+        if (excluded_sheets.detect{|a| a==@sheetbase[:name]}).nil?
+          
+        end
+      else
+        @sheets << sheetbase
+      end
+
+#      @sheets << sheetbase
       @sheetbase=Hash.new
     end
   end
   
-  def commentsrel
+  def commentsrel #opthash?
     Find.find(@destination + '/xl/worksheets/_rels') do |path|
       if File.basename(path).split(".").last=='rels'
         f=Ox.load_file(path)
@@ -220,13 +257,13 @@ class Workbook
     end
   end
 
-  def matrixto(*args)
+  def matrixto(copymerge)
     @sheets.each_with_index do |sheet, i|
       m=Matrix.build(sheet[:cells].last.y, sheet[:cells].last.x) {nil}#!!!!! each!!! SHEETS or SHEET?
       sheet[:cells].each do |c|
         m[c.y-1, c.x-1]=c#.value ##value? c? comment?#
       end
-      if args.include? 'copymerged' #ez majd egy hash legyen
+      if copymerge==true
         sheet[:mergedcells].each do |mc|
           a = mc.split(':')
           #return matrix cell addresses
@@ -264,7 +301,8 @@ end
 ##    puts "new values: #{x.inspect}"
 #end
 w=Workbook.new('Schedules3.xlsx')
-puts "sheet0: #{w.sheets[0]}"
+#puts "sheet0: #{w.sheets[0]}"
+puts "sheets: #{w.sheetbase}"
 #puts "Matrix: #{w.to_m('copymerged').inspect}"
 
 #puts "sheetbase: #{w.sheetbase}"
