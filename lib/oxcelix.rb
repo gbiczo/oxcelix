@@ -2,6 +2,7 @@ require 'ox'
 require 'find'
 require 'matrix'
 require 'fileutils'
+require 'zip'
 
 class String
   # Returns true if the given String represents a numeric value 
@@ -25,7 +26,7 @@ class Fixnum
   end
 end
 
-# The Oxcelix module is a wrapper for all classes and modules embedded in the Oxcelix namespace.
+# The namespace for all classes and modules included on Oxcelix.
 module Oxcelix
   # The Cellhelper module defines some methods useful to manipulate Cell objects
   module Cellhelper
@@ -187,7 +188,7 @@ module Oxcelix
     ##
     # Create a new Workbook object.
     #
-    # filename is the name of the excel file to be opened (xlsx)
+    # filename is the name of the Excel 2007/2010 file to be opened (xlsx)
     #
     # options is a collection of options that can be passed to Workbook.
     # Options may include:
@@ -207,8 +208,7 @@ module Oxcelix
     # * adding comments to the cells
     # * Converting each sheet to a Matrix object
     def initialize(filename, options={})
-      require 'zip'
-      @destination = 'tmp'
+      @destination = Dir.pwd+'/tmp'
       FileUtils.mkdir(@destination)
       Zip::File.open(filename){ |zip_file|
         zip_file.each{ |f| 
@@ -221,14 +221,15 @@ module Oxcelix
       @sheetbase={}
       @a=Ox::load_file(@destination+'/xl/workbook.xml')
       
-      sheetdata(options[:include], options[:excude]); commentsrel; shstrings;
+      sheetdata(options); commentsrel; shstrings;
       @sheets.each do |x|
         sname="sheet#{x[:sheetId]}"
         @sheet = Xlsheet.new()
         File.open(@destination+"/xl/worksheets/#{sname}.xml", 'r') do |f|
           Ox.sax_parse(@sheet, f)
         end
-        comments=mkcomments(x[:comments])
+        comments=
+        mkcomments(x[:comments])
         @sheet.cellarray.each do |sh|
           if sh.type=="s"
             sh.value = @sharedstrings[sh.value.to_i]
@@ -258,33 +259,28 @@ module Oxcelix
     # included sheets.
     #
     # If *included_sheets* (the array of whitelisted sheets) is *nil*, the hash is added.
-    def sheetdata included_sheets, excluded_sheets=[]
+    def sheetdata options={}
       @a.locate("workbook/sheets/*").each do |x|
         @sheetbase[:name] = x[:name]
         @sheetbase[:sheetId] = x[:sheetId]
         @sheetbase[:relationId] = x[:"r:id"]
-        unless excluded_sheets.nil?
-          i = excluded_sheets.detect{|d| d.to_sym == sheetbase[:name]}
-          if i.nil?
-            @sheets << sheetbase
-          end
-        end
-        unless included_sheets.nil?
-          included_sheets.each do |incl|
-            if incl[:name] == sheetbase[:name]
-              @sheets << sheetbase
-            end
-          end
-        else
-          @sheets << sheetbase
-        end
+        @sheets << @sheetbase
         @sheetbase=Hash.new
       end
+      sheetarr=@sheets.map{|i| i[:name]}
+      if options[:include].nil?; options[:include]=[]; end
+      if options[:include].to_a.size>0
+        sheetarr.keep_if{|item| options[:include].to_a.detect{|d| d==item}}
+      end
+      sheetarr=sheetarr-options[:exclude].to_a
+      @sheets.keep_if{|item| sheetarr.detect{|d| d==item[:name]}}
+      @sheets.uniq!
     end
     
     # Build the relationship between sheets and the XML files storing the comments
     # to the actual sheet.
-    def commentsrel #opthash?
+    def commentsrel #!!!MI VAN HA NINCS KOMMENT???????
+     unless Dir[@destination + '/xl/worksheets/_rels'].empty?
       Find.find(@destination + '/xl/worksheets/_rels') do |path|
         if File.basename(path).split(".").last=='rels'
           f=Ox.load_file(path)
@@ -299,6 +295,11 @@ module Oxcelix
           end
         end
       end
+     else
+       @sheets.each do |s|
+         s[:comments]=nil
+       end
+     end
     end
 
     # Invokes the Sharedstrings helper class
@@ -368,7 +369,6 @@ module Oxcelix
         s.name=@sheets[i][:name]; s.sheetId=@sheets[i][:sheetId]; s.relationId=@sheets[i][:relationId]
         s.data=m
         @sheets[i]=s
-        #@sheets[i].delete_if{|key, value| key == :mergedcells}
       end
     end
   end
