@@ -1,4 +1,4 @@
-oxcelix
+Oxcelix
 =======
 
 Oxcelix - A fast and simple .xlsx file parser
