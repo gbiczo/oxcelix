@@ -6,13 +6,17 @@ require 'zip'
 
 class String
   # Returns true if the given String represents a numeric value 
+  # @return [Bool]
   def numeric?
     Float(self) != nil rescue false
   end
 end
 
 class Matrix
-  # Set the cell i,j to x, where i=row, and j=column.
+  # Set the cell value i,j to x, where i=row, and j=column.
+  # @param i [Integer] Row
+  # @param j [Integer] Column
+  # @param x [Object] New cell value
   def []=(i, j, x)
     @rows[i][j]=x
   end
@@ -20,6 +24,7 @@ end
 
 class Fixnum
   # Returns the column name corresponding to the given number. e.g: 1.col_name => 'B'
+  # @return [String]
   def col_name
     val=self/26
     (val > 0 ? (val - 1).col_name : "") + (self % 26 + 65).chr
@@ -31,6 +36,7 @@ module Oxcelix
   # The Cellhelper module defines some methods useful to manipulate Cell objects
   module Cellhelper
     # Set the excel cell name (eg: 'A2')
+    # @param [String] val Excel cell address name
     def r(val); @xlcoords = val; end;
     # Set cell type    
     def t(val); @type = val; end;
@@ -42,6 +48,8 @@ module Oxcelix
     # When called without parameters, returns the x coordinate of the calling cell object based on the value of #@xlcoords
     # If a parameter is given, #x will return the x coordinate corresponding to the parameter
     # E.g.: <tt>('B3') # => 1</tt>
+    # @param [String] coord Optional parameter used when method is not called from a Cell object
+    # @return [Integer] x coordinate
     def x(coord=nil)
       if coord.nil?
         coord = @xlcoords
@@ -52,6 +60,8 @@ module Oxcelix
     # When called without parameters, returns the y coordinate of the calling cell object based on the value of #@xlcoords
     # If a parameter is given, #y will return the y coordinate corresponding to the parameter
     # E.g.: <tt>('B3') # => 2</tt>
+    # @param [String] coord Optional parameter used when method is not called from a Cell object
+    # @return [Integer] x coordinate
     def y(coord=nil)
       if coord.nil?
         coord = @xlcoords
@@ -61,6 +71,16 @@ module Oxcelix
   end
 
   # Simple class representing an excel cell.
+  # @!attribute [rw] xlcoords
+  #   @return [String] The Excel-style coordinates of the cell object
+  # @!attribute [rw] type
+  #   @return [String] Cell content type
+  # @!attribute [rw] value
+  #   @return [String] the type of the cell
+  # @!attribute [rw] comment
+  #   @return [String] Comment text
+  # @!attribute [rw] style
+  #   @return [String] Excel style attribute
   class Cell
     attr_accessor :xlcoords, :type, :value, :comment, :style
     include Cellhelper
@@ -69,33 +89,42 @@ module Oxcelix
   ##
   # The Xlsheet class is a SAX parser based on the Ox library. It parses a
   # SpreadsheetML (AKA Office Open XML) formatted XML file and returns an array
-  # of Cell objects (#cellarray).
+  # of Cell objects {#cellarray} and an array of merged cells {#mergedcells}.
   #
   # Xlsheet will omit the following:
   # * empty cells
   # * cells containing formulas
   #
-  # Only non-empty cells of merged groupsbe added to #cellarray. A separate array
-  # (#mergedcells) is reserved for merging.
+  # Only non-empty cells of merged groups will be added to {#cellarray}. A separate array
+  # {#mergedcells} is reserved for merging.
   class Xlsheet < ::Ox::Sax
-    attr_accessor :xmlstack, :lastopennode, :mergedcells, :cellarray, :cell
+  # @!attribute [rw] xmlstack
+  #   @return [String] Stores the state machine's actual state
+  # @!attribute [rw] mergedcells
+  #   @return [Array] the array of merged cells
+  # @!attribute [rw] cellarray
+  #   @return [Array] the array of non-empty (meaningful) cells of the current sheet
+  # @!attribute [rw] cell
+  #   @return [Cell] the cell currently being processed.
+    attr_accessor :xmlstack, :mergedcells, :cellarray, :cell
     def initialize()
       @xmlstack = []
-      @lastopennode = nil
       @mergedcells = []
       @cellarray = []
       @cell = Cell.new
     end
 
-    # Save SAX state-machine state to #xmlstack if and only if the processed
+    # Save SAX state-machine state to {#xmlstack} if and only if the processed
     # element is a :c (column) or a :mergeCell (merged cell)
+    # @param [String] name Start element
     def start_element(name)
       if name == :c || name == :mergeCell
         @xmlstack << name
       end
     end
     
-    # Step back in the stack (#xmlstack.pop), clear actual cell information
+    # Step back in the stack ({#xmlstack}.pop), clear actual cell information
+    # @param [String] name Element ends
     def end_element(name)
       @xmlstack.pop
       if name == :c || name == :mergeCell
@@ -106,7 +135,11 @@ module Oxcelix
     # Set cell value, style, etc. This will only happen if the cell has an
     # actual value AND the parser's state is :c.
     # If the state is :mergeCell AND the actual attribute name is :ref the
-    # attribute will be added to the merged cells array
+    # attribute will be added to the merged cells array.
+    # The attribute name is tested against the Cell object: if the cell
+    # has a method named the same way, that method is called with the str parameter.
+    # @param [String] name of the attribute.
+    # @param [String] str Content of the attribute 
     def attr(name, str)
       if @xmlstack.last == :c # && name != :s
         @cell.send name, str if @cell.respond_to?(name)
