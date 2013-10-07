@@ -58,7 +58,8 @@ module Oxcelix
       }
       @sheets=[]
       @sheetbase={}
-      @a=Ox::load_file(@destination+'/xl/workbook.xml')
+      f=IO.read(@destination+'/xl/workbook.xml')
+      @a=Ox::load(f)
       
       sheetdata(options); commentsrel; shstrings;
       @sheets.each do |x|
