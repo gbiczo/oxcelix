@@ -3,7 +3,7 @@
 require 'rake'
 Gem::Specification.new do |s|
   s.name	= 'oxcelix'
-  s.version	= '0.1.0'
+  s.version	= '0.1.1'
   s.date	= '2013-10-06'
   s.summary	= 'A fast Excel 2007/2010 file parser'
   s.description	= 'A fast .xlsx file  parser that returns a collection of Matrix objects'
