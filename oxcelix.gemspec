@@ -18,5 +18,5 @@ Gem::Specification.new do |s|
   
   s.add_runtime_dependency "ox", [">= 2.0.6"]
   s.add_runtime_dependency "rubyzip", [">= 0.9.9"]
-  s.rdoc_options << --all
+  s.rdoc_options << '--all'
 end
