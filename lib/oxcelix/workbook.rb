@@ -14,16 +14,12 @@ module Oxcelix
 
   # The Workbook class will open the excel file, and convert it to a collection of
   # Matrix objects
-  # @!attribute [rw] sheetbase
-  #   @return [Hash] sheetbase Single sheet metadata - will be obsolete in the future
   # @!attribute [rw] sheets
   #   @return [Array] sheets Collection of {Sheet} objects 
-  # @!attribute [rw] sharedstrings
-  #   @return [Sharedstrings] sharedstrings returns a {Sharedstrings} object used to interpolate string indexes with their actual value. 
   class Workbook
     include Cellhelper
     include Workbookhelper
-    attr_accessor :sheetbase, :sheets, :sharedstrings
+    attr_accessor :sheets
     ##
     # Create a new Workbook object.
     #
@@ -58,6 +54,7 @@ module Oxcelix
       }
       @sheets=[]
       @sheetbase={}
+      @sharedstrings=[]
       f=IO.read(@destination+'/xl/workbook.xml')
       @a=Ox::load(f)
       
