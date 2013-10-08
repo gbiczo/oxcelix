@@ -1,6 +1,10 @@
 module Oxcelix
 # The Comments class is a parser which builds an array of comments
   class Comments < ::Ox::Sax
+    # @!attribute [rw] commarray
+    #   @return [Array] the array of all comments of a given sheet
+    # @!attribute [rw] comment
+    #   @return [Hash] a hash representing a comment
     attr_accessor :commarray, :comment
     def initialize
       @commarray=[]

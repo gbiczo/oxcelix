@@ -1,7 +1,7 @@
 
 module Oxcelix
   # The Cellhelper module defines some methods useful to manipulate Cell objects
-  module Cellhelper
+  module Cellvalues
     # Set the excel cell name (eg: 'A2')
     # @param [String] val Excel cell address name
     def r(val); @xlcoords = val; end;
@@ -11,7 +11,9 @@ module Oxcelix
     def v(val); @value = val; end;
     # Set cell style (number format and style) 
     def s(val); @style = val; end;
-    
+  end
+  
+  module Cellhelper
     # When called without parameters, returns the x coordinate of the calling cell object based on the value of #@xlcoords
     # If a parameter is given, #x will return the x coordinate corresponding to the parameter
     # @example find x coordinate (column number) of a cell

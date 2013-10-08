@@ -13,5 +13,6 @@ module Oxcelix
   class Cell
     attr_accessor :xlcoords, :type, :value, :comment, :style
     include Cellhelper
+    include Cellvalues
   end
 end

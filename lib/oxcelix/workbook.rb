@@ -15,13 +15,13 @@ module Oxcelix
   # The Workbook class will open the excel file, and convert it to a collection of
   # Matrix objects
   # @!attribute [rw] sheets
-  #   @return [Array] sheets Collection of {Sheet} objects 
+  #   @return [Array] a collection of {Sheet} objects 
   class Workbook
     include Cellhelper
     include Workbookhelper
     attr_accessor :sheets
     ##
-    # Create a new Workbook object.
+    # Create a new {Workbook} object.
     #
     # filename is the name of the Excel 2007/2010 file to be opened (xlsx)
     #
@@ -176,11 +176,12 @@ module Oxcelix
     # 
     # The matrix will replace the array of cells in the actual sheet.
     # @param [Bool ] copymerge 
-    # @return [Matrix] a Matrix that stores the cell values, and, depending on the copymerge parameter, will copy the merged value
+    # @return [Matrix] a Matrix object that stores the cell values, and, depending on the copymerge parameter, will copy the merged value
     #  into every merged cell
     def matrixto(copymerge)
       @sheets.each_with_index do |sheet, i|
-        m=Matrix.build(sheet[:cells].last.y+1, sheet[:cells].last.x+1) {nil}
+        #m=Matrix.build(sheet[:cells].last.y+1, sheet[:cells].last.x+1) {nil}
+        m=Sheet.build(sheet[:cells].last.y+1, sheet[:cells].last.x+1) {nil}
         sheet[:cells].each do |c|
           m[c.y, c.x]=c
         end
@@ -207,10 +208,8 @@ module Oxcelix
             end
           end
         end
-        s=Sheet.new
-        s.name=@sheets[i][:name]; s.sheetId=@sheets[i][:sheetId]; s.relationId=@sheets[i][:relationId]
-        s.data=m
-        @sheets[i]=s
+        m.name=@sheets[i][:name]; m.sheetId=@sheets[i][:sheetId]; m.relationId=@sheets[i][:relationId]
+        @sheets[i]=m
       end
     end
   end
