@@ -13,7 +13,7 @@ require 'oxcelix/sax/xlsheet'
 
 class String
   # Returns true if the given String represents a numeric value 
-  # @return [Bool]
+  # @return [Bool] true if the string represents a numeric value, false if it doesn't.
   def numeric?
     Float(self) != nil rescue false
   end
@@ -38,7 +38,7 @@ class Fixnum
   end
 end
 
-# The namespace for all classes and modules included on Oxcelix.
+# The namespace for all classes and modules included in Oxcelix.
 module Oxcelix
 
 end
