@@ -120,7 +120,9 @@ module Oxcelix
      unless Dir[@destination + '/xl/worksheets/_rels'].empty?
       Find.find(@destination + '/xl/worksheets/_rels') do |path|
         if File.basename(path).split(".").last=='rels'
-          f=Ox.load_file(path)
+#          f=Ox.load_file(path)
+          a=IO.read(@destination+'/xl/workbook.xml')
+          f=Ox::load(f)
           f.locate("Relationships/*").each do |x|
             if x[:Target].include?"comments"
               @sheets.each do |s|
