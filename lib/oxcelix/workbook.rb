@@ -122,7 +122,7 @@ module Oxcelix
         if File.basename(path).split(".").last=='rels'
 #          f=Ox.load_file(path)
           a=IO.read(@destination+'/xl/workbook.xml')
-          f=Ox::load(f)
+          f=Ox::load(a)
           f.locate("Relationships/*").each do |x|
             if x[:Target].include?"comments"
               @sheets.each do |s|
