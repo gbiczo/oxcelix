@@ -61,30 +61,14 @@ module Oxcelix
       
       sheetdata(options); commentsrel; shstrings;
 
-      relationshipfile=nil
-      unless Dir[@destination + '/xl/_rels'].empty?
-        Find.find(@destination + '/xl/_rels') do |path|
-          if File.basename(path).split(".").last=='rels'
-            g=IO.read(path)
-            relationshipfile=Ox::load(g)
-          end
-        end
-      end
       @sheets.each do |x|
-        sname=''
-        relationshipfile.locate("Relationships/*").each do |rship|
-          if rship[:Id] == x[:relationId]
-            sname=rship[:Target]
-          end
-        end
 
         @sheet = Xlsheet.new()
 
-        File.open(@destination+"/xl/#{sname}", 'r') do |f|
+        File.open(@destination+"/xl/#{x[:filename]}", 'r') do |f|
           Ox.sax_parse(@sheet, f)
         end
-        comments=
-        mkcomments(x[:comments])
+        comments = mkcomments(x[:comments])
         @sheet.cellarray.each do |sh|
           if sh.type=="s"
             sh.value = @sharedstrings[sh.value.to_i]
@@ -119,6 +103,24 @@ module Oxcelix
         @sheetbase[:name] = x[:name]
         @sheetbase[:sheetId] = x[:sheetId]
         @sheetbase[:relationId] = x[:"r:id"]
+
+        relationshipfile=nil
+        fname=nil
+        unless Dir[@destination + '/xl/_rels'].empty?
+          Find.find(@destination + '/xl/_rels') do |path|
+            if File.basename(path).split(".").last=='rels'
+              g=IO.read(path)
+              relationshipfile=Ox::load(g)
+            end
+          end
+        end
+        relationshipfile.locate("Relationships/*").each do |rship|
+          if rship[:Id] == x[:"r:id"]
+            @sheetbase[:filename]=rship[:Target]
+          end
+        end
+
+
         @sheets << @sheetbase
         @sheetbase=Hash.new
       end
@@ -139,12 +141,15 @@ module Oxcelix
       Find.find(@destination + '/xl/worksheets/_rels') do |path|
         if File.basename(path).split(".").last=='rels'
 #          f=Ox.load_file(path)
-          a=IO.read(@destination+'/xl/workbook.xml')
+puts "comment relationship"+path
+          # a=IO.read(@destination+'/xl/workbook.xml')
+          a=IO.read(path)
           f=Ox::load(a)
           f.locate("Relationships/*").each do |x|
             if x[:Target].include?"comments"
               @sheets.each do |s|
-                if File.basename(path,".rels")=="sheet"+s[:sheetId]+".xml"
+#                if File.basename(path,".rels")=="sheet"+s[:sheetId]+".xml"
+                if "worksheets/" + File.basename(path,".rels")==s[:filename]
                   s[:comments]=x[:Target]
                 end
               end
