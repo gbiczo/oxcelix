@@ -76,7 +76,7 @@ module Oxcelix
           if !comments.nil?
             comm=comments.select {|c| c[:ref]==(sh.xlcoords)}
             if comm.size > 0
-              sh.comment=comm
+              sh.comment=comm[0][:comment]
             end
             comments.delete_if{|c| c[:ref]==(sh.xlcoords)}
           end
@@ -136,19 +136,16 @@ module Oxcelix
     
     # Build the relationship between sheets and the XML files storing the comments
     # to the actual sheet.
-    def commentsrel #!!!MI VAN HA NINCS KOMMENT???????
+    def commentsrel
      unless Dir[@destination + '/xl/worksheets/_rels'].empty?
       Find.find(@destination + '/xl/worksheets/_rels') do |path|
         if File.basename(path).split(".").last=='rels'
-#          f=Ox.load_file(path)
-puts "comment relationship"+path
-          # a=IO.read(@destination+'/xl/workbook.xml')
+          puts "comment relationship"+path
           a=IO.read(path)
           f=Ox::load(a)
           f.locate("Relationships/*").each do |x|
             if x[:Target].include?"comments"
               @sheets.each do |s|
-#                if File.basename(path,".rels")=="sheet"+s[:sheetId]+".xml"
                 if "worksheets/" + File.basename(path,".rels")==s[:filename]
                   s[:comments]=x[:Target]
                 end
@@ -205,7 +202,6 @@ puts "comment relationship"+path
     #  into every merged cell
     def matrixto(copymerge)
       @sheets.each_with_index do |sheet, i|
-        #m=Matrix.build(sheet[:cells].last.y+1, sheet[:cells].last.x+1) {nil}
         m=Sheet.build(sheet[:cells].last.y+1, sheet[:cells].last.x+1) {nil}
         sheet[:cells].each do |c|
           m[c.y, c.x]=c
@@ -223,11 +219,11 @@ puts "comment relationship"+path
               (y1..y2).each do |row|
                 if valuecell != nil
                   valuecell.xlcoords=(col.col_name)+(row+1).to_s
-                  m[col, row]=valuecell
+                  m[row, col]=valuecell
                 else
                   valuecell=Cell.new
                   valuecell.xlcoords=(col.col_name)+(row+1).to_s
-                  m[col, row]=valuecell
+                  m[row, col]=valuecell
                 end
               end
             end
