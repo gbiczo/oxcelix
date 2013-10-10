@@ -55,14 +55,32 @@ module Oxcelix
       @sheets=[]
       @sheetbase={}
       @sharedstrings=[]
+      
       f=IO.read(@destination+'/xl/workbook.xml')
       @a=Ox::load(f)
       
       sheetdata(options); commentsrel; shstrings;
+
+      relationshipfile=nil
+      unless Dir[@destination + '/xl/_rels'].empty?
+        Find.find(@destination + '/xl/_rels') do |path|
+          if File.basename(path).split(".").last=='rels'
+            g=IO.read(path)
+            relationshipfile=Ox::load(g)
+          end
+        end
+      end
       @sheets.each do |x|
-        sname="sheet#{x[:sheetId]}"
+        sname=''
+        relationshipfile.locate("Relationships/*").each do |rship|
+          if rship[:Id] == x[:relationId]
+            sname=rship[:Target]
+          end
+        end
+
         @sheet = Xlsheet.new()
-        File.open(@destination+"/xl/worksheets/#{sname}.xml", 'r') do |f|
+
+        File.open(@destination+"/xl/#{sname}", 'r') do |f|
           Ox.sax_parse(@sheet, f)
         end
         comments=
