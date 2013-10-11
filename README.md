@@ -32,4 +32,4 @@ To include only some of the sheets:
 
 To have the values of the merged cells copied over the mergegroup:
 
-`w = Oxcelix::Workbook.new('whatever.xlsx', :mergecells => true)`
+`w = Oxcelix::Workbook.new('whatever.xlsx', :copymerge => true)`
