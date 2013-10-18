@@ -3,7 +3,7 @@ module Oxcelix
   # The Cellhelper module defines some methods useful to manipulate Cell objects
   module Numformats
 #    fhash={:rvalue=>nil, :dvalue=>nil}
-    fary=[
+    FARY=[
     #    ID  Format Code
     { :rvalue => Proc.new{@value}, :dvalue => Proc.new{@value} }, #0   General 
     { :rvalue => Proc.new{@value}, :dvalue => Proc.new{@value.to_i} }, #1   0 
