@@ -140,7 +140,6 @@ module Oxcelix
      unless Dir[@destination + '/xl/worksheets/_rels'].empty?
       Find.find(@destination + '/xl/worksheets/_rels') do |path|
         if File.basename(path).split(".").last=='rels'
-          puts "comment relationship"+path
           a=IO.read(path)
           f=Ox::load(a)
           f.locate("Relationships/*").each do |x|
