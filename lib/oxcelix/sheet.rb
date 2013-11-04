@@ -29,7 +29,9 @@ module Oxcelix
     def to_m(*attrs)
       m=Matrix.build(self.col(0).length, self.row(0).length){nil}
       self.each do |x, row, col|
-        m[row, col]=x
+        if attrs.size == 0 || attrs.nil?
+          m[row, col]=x.value
+        end
       end
       return m
     end
