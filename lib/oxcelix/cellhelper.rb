@@ -1,6 +1,43 @@
 
 module Oxcelix
-  # The Cellhelper module defines some methods useful to manipulate Cell objects
+  
+  
+  # The Numformats module encapsulates number formatting methods.  
+  module Numformats
+    NUMERICS=["0", "#", "\\?"]
+    DATES=["m", "d", "y", "h", "s", "a", "p"]
+    NUMERIC_SEPARATORS=["E-", "E-", "e+", "e-", ".", ",", "$", "-", "+", "/", "(", ")", ":", " ", "_", "*"]
+    DATE_SEPARATORS=["/", "-", "."]
+    OTHERS=["@", "text"]
+    AFFIXES=["%"]
+
+
+    # Get the cell's value and excel format string end return a string, a ruby Numeric or a DateTime object
+    def to_ru
+      if @numformat == nil
+        return @value
+      end
+      nums = /#{NUMERICS.join("|")}/
+      dates = /#{DATES.join("|")}/
+      n = nums === @numformat.downcase
+      d = dates === @numformat.downcase 
+
+      raise ArgumentError, "Excel format cannot be both date and numeric type" if d == n && n == true
+
+      if d
+        if (0.0..1.0).include? @value
+          return DateTime.new(1900, 01, 01) + (eval @value)
+        else
+          return DateTime.new(1899, 12, 31) + (eval @value)
+        end
+      else
+        eval @value rescue @value
+      end
+    end
+  end
+
+  # The Cellvalues module provides methods for setting cell values. They are named after the relevant XML entitiesd and 
+  # called directly by the Xlsheet SAX parser.
   module Cellvalues
     # Set the excel cell name (eg: 'A2')
     # @param [String] val Excel cell address name
@@ -13,6 +50,7 @@ module Oxcelix
     def s(val); @style = val; end;
   end
   
+  # The Cellhelper module defines some methods useful to manipulate Cell objects
   module Cellhelper
     # When called without parameters, returns the x coordinate of the calling cell object based on the value of #@xlcoords
     # If a parameter is given, #x will return the x coordinate corresponding to the parameter

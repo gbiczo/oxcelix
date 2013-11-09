@@ -10,9 +10,13 @@ module Oxcelix
   #   @return [String] Comment text
   # @!attribute [rw] style
   #   @return [String] Excel style attribute
+  # @!attribute [rw] numformat
+  #   @return [String] Excel style number formatting
+
   class Cell
-    attr_accessor :xlcoords, :type, :value, :comment, :style
+    attr_accessor :xlcoords, :type, :value, :comment, :style, :numformat
     include Cellhelper
     include Cellvalues
+    include Numformats
   end
 end

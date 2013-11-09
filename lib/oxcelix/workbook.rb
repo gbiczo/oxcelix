@@ -31,6 +31,8 @@ module Oxcelix
     # the group of three merged cells <tt>|   a   |</tt> will become <tt>|a|a|a|</tt>
     # * :include (Ary) - an array of sheet names to be included
     # * :exclude (Ary) - an array of sheet names not to be processed
+    # * :values (Symbol) - cell values. This can be: :false, if the whole cell is needed, :excel, if the raw excel values need to be inserted
+    # and :ruby if ruby objects are preferred.
     #
     # The excel file is first getting unzipped, then the workbook.xml file gets
     # processed. This file stores sheet metadata, which will be filtered (by including
@@ -56,14 +58,22 @@ module Oxcelix
       @sheetbase={}
       @sharedstrings=[]
       
-      f=IO.read(@destination+'/xl/workbook.xml')
+      f=IO.read(@destination + '/xl/workbook.xml')
       @a=Ox::load(f)
       
       sheetdata(options); commentsrel; shstrings;
+      
+      styles = Styles.new()
+      File.open(@destination + '/xl/styles.xml', 'r') do |f|
+        Ox.sax_parse(styles, f)
+      end
+      styles.temparray.sort_by!{|x| x[:numFmtId].to_i}
+      styles.temparray.each{|x| styles.defined_formats << x[:formatCode]}
+      styles.formats += styles.defined_formats
 
       @sheets.each do |x|
 
-        @sheet = Xlsheet.new()
+        @sheet = Xlsheet.new(styles)
 
         File.open(@destination+"/xl/#{x[:filename]}", 'r') do |f|
           Ox.sax_parse(@sheet, f)
@@ -85,7 +95,7 @@ module Oxcelix
         x[:mergedcells] = @sheet.mergedcells
       end
       FileUtils.remove_dir(@destination, true)
-      matrixto(options[:copymerge])
+      matrixto(options[:copymerge], options[:values])
     end
     
     private
@@ -196,14 +206,23 @@ module Oxcelix
     # of each copied cell is changed to reflect the actual Excel coordinate.
     # 
     # The matrix will replace the array of cells in the actual sheet.
-    # @param [Bool ] copymerge 
+    # @param [Bool] copymerge
+    # @yield a value to be put as a cell. e.g: matrixto true, { |x| x = x.value.to_ru } 
     # @return [Matrix] a Matrix object that stores the cell values, and, depending on the copymerge parameter, will copy the merged value
     #  into every merged cell
-    def matrixto(copymerge)
+    def matrixto(copymerge, fmt)
       @sheets.each_with_index do |sheet, i|
         m=Sheet.build(sheet[:cells].last.y+1, sheet[:cells].last.x+1) {nil}
+        d = nil
         sheet[:cells].each do |c|
-          m[c.y, c.x]=c
+          if fmt == :excel
+            d = c.value
+          elsif fmt == :ruby
+            d = c.to_ru
+          else
+            d = c
+          end
+          m[c.y, c.x] = d
         end
         if copymerge==true
           sheet[:mergedcells].each do |mc|

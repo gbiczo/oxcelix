@@ -25,5 +25,15 @@ module Oxcelix
         super(i,j[0])
       end
     end
+
+    def to_m(*attrs)
+      m=Matrix.build(self.col(0).length, self.row(0).length){nil}
+      self.each do |x, row, col|
+        if attrs.size == 0 || attrs.nil?
+          m[row, col]=x.value
+        end
+      end
+      return m
+    end
   end
 end
