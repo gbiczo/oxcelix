@@ -21,11 +21,10 @@ module Oxcelix
   # @!attribute [rw] cell
   #   @return [Cell] the cell currently being processed.
     attr_accessor :xmlstack, :mergedcells, :cellarray, :cell
-    def initialize(sty=nil)
+    def initialize()
       @xmlstack = []
       @mergedcells = []
       @cellarray = []
-      @styles = sty
       @cell = Cell.new
     end
 
@@ -70,7 +69,6 @@ module Oxcelix
       if @xmlstack.last == :c
         if @cell.type != "shared" && @cell.type != "e" && str.numeric?
           @cell.v str
-          @cell.numformat = @styles.formats[@styles.styleary[@styles.style_ref_ary[cell.style.to_i][:xfId].to_i].to_i].downcase
           @cellarray << @cell
         end
         cell=Cell.new

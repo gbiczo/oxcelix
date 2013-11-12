@@ -67,19 +67,23 @@ module Oxcelix
       File.open(@destination + '/xl/styles.xml', 'r') do |f|
         Ox.sax_parse(styles, f)
       end
-      styles.temparray.sort_by!{|x| x[:numFmtId].to_i}
-      styles.temparray.each{|x| styles.defined_formats << x[:formatCode]}
-      styles.formats += styles.defined_formats
+
+      styles.temparray.sort_by!{|st| st[:numFmtId].to_i}
+#      styles.temparray.each{|st| styles.defined_formats << st[:formatCode]}
+      styles.temparray.each{|st| styles.formats << st[:formatCode]}
+#      styles.formats += styles.defined_formats
+      styles.styleary.map!{|s| styles.formats[s.to_i]}
 
       @sheets.each do |x|
 
-        @sheet = Xlsheet.new(styles)
+        @sheet = Xlsheet.new()
 
         File.open(@destination+"/xl/#{x[:filename]}", 'r') do |f|
           Ox.sax_parse(@sheet, f)
         end
         comments = mkcomments(x[:comments])
         @sheet.cellarray.each do |sh|
+          sh.numformat = styles.styleary[sh.style.to_i]
           if sh.type=="s"
             sh.value = @sharedstrings[sh.value.to_i]
           end
@@ -95,7 +99,7 @@ module Oxcelix
         x[:mergedcells] = @sheet.mergedcells
       end
       FileUtils.remove_dir(@destination, true)
-      matrixto(options[:copymerge], options[:values])
+      matrixto options[:copymerge]
     end
     
     private
@@ -210,19 +214,11 @@ module Oxcelix
     # @yield a value to be put as a cell. e.g: matrixto true, { |x| x = x.value.to_ru } 
     # @return [Matrix] a Matrix object that stores the cell values, and, depending on the copymerge parameter, will copy the merged value
     #  into every merged cell
-    def matrixto(copymerge, fmt)
+    def matrixto(copymerge)
       @sheets.each_with_index do |sheet, i|
         m=Sheet.build(sheet[:cells].last.y+1, sheet[:cells].last.x+1) {nil}
-        d = nil
         sheet[:cells].each do |c|
-          if fmt == :excel
-            d = c.value
-          elsif fmt == :ruby
-            d = c.to_ru
-          else
-            d = c
-          end
-          m[c.y, c.x] = d
+          m[c.y, c.x] = c
         end
         if copymerge==true
           sheet[:mergedcells].each do |mc|

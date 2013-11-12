@@ -12,7 +12,7 @@ module Oxcelix
     AFFIXES=["%"]
 
 
-    # Get the cell's value and excel format string end return a string, a ruby Numeric or a DateTime object
+    # Get the cell's value and excel format string end return a string, a ruby Numeric or a DateTime object accordingly
     def to_ru
       if @numformat == nil
         return @value
