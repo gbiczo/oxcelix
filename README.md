@@ -1,5 +1,6 @@
 Oxcelix
 =======
+<a href="http://badge.fury.io/rb/oxcelix"><img src="https://badge.fury.io/rb/oxcelix@2x.png" alt="Gem Version" height="18"></a>
 
 Oxcelix - A fast and simple .xlsx file parser
 
