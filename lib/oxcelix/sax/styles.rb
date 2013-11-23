@@ -1,8 +1,5 @@
 require 'ox'
-
-#require 'ruby-debug'
-#debugger
-# module Oxcelix
+module Oxcelix
 
   # Ox based SAX parser which pushes the number formats (taken from the styles.xml file) to an array 
   # The reference taken from the cell's 's' attribute points to an element of the
@@ -44,11 +41,9 @@ require 'ox'
       defined_formats=Array.new(114)
       @formats.push *defined_formats
       @temparray=[]
- #     @style_ref_ary=[]
       @styleary=[]
       @xmlstack = []
       @numform={}
-#      @ref_numform={}
     end
 
     def nf key, value
@@ -59,20 +54,8 @@ require 'ox'
       end
     end
 
-    # def rnf key, value
-    #   @ref_numform[key]=value
-    #   if @ref_numform.size == 2
-    #     @style_ref_ary << @ref_numform
-    #     @ref_numform={}
-    #   end
-    # end
-
     def numFmtId str
-#      if @xmlstack[-2] == :cellStyleXfs
-#        @styleary << str
-#      elsif @xmlstack[-2] == :cellXfs
       if @xmlstack[-2] == :cellXfs
-#        rnf :numFmtId, str
         @styleary << str
       elsif @xmlstack[-2] == :numFmts
         nf :numFmtId, str
@@ -82,23 +65,12 @@ require 'ox'
     def formatCode str
       nf :formatCode, str
     end
-
-  #  def xfId str
-  #    rnf :xfId, str
-  #  end
-
     def start_element(name)
-#      if name == :cellXfs || name == :cellStyleXfs || name == :xf || name == :numFmt || name == :numFmts || name == :styleSheet
-#      if name == :cellXfs || name == :xf || name == :numFmt || name == :numFmts || name == :styleSheet
-        @xmlstack << name
-#      end
+      @xmlstack << name
     end
 
     def end_element(name)
-#      if name == :cellXfs || name == :cellStyleXfs || name == :xf || name == :numFmt || name == :numFmts || name == :styleSheet
-#      if name == :cellXfs || name == :xf || name == :numFmt || name == :numFmts || name == :styleSheet
-        @xmlstack.pop
-#      end
+      @xmlstack.pop
     end
 
     def attr(name, str)

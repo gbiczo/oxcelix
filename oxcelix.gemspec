@@ -3,8 +3,8 @@
 require 'rake'
 Gem::Specification.new do |s|
   s.name	= 'oxcelix'
-  s.version	= '0.2.4'
-  s.date	= '2013-10-10'
+  s.version	= '0.3.0'
+  s.date	= '2013-11-12'
   s.summary	= 'A fast Excel 2007/2010 file parser'
   s.description	= 'A fast Excel 2007/2010 (.xlsx) file parser that returns a collection of Matrix objects'
   s.authors	= 'Giovanni Biczo'
@@ -12,7 +12,9 @@ Gem::Specification.new do |s|
   s.rubyforge_project = 'oxcelix'
 
   s.files	= FileList["LICENSE", "README.rdoc", "README.md",
-		  "lib/*", "lib/oxcelix/*", "lib/oxcelix/sax/*",
+		  "lib/oxcelix.rb*", "lib/oxcelix/cellhelper.rb",
+		  "lib/oxcelix/sheet.rb", "lib/oxcelix/workbook.rb",
+		  "lib/oxcelix/sax/*",
 		  "oxcelix.gemspec", "spec/*", ".yardopts", "CHANGES"].to_a
   s.license	= 'MIT'
   
