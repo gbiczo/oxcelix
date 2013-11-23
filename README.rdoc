@@ -1,12 +1,14 @@
 = \Oxcelix - A fast .xlsx file parser
 
+{<img src="https://badge.fury.io/rb/oxcelix.png" alt="Gem Version" />}[http://badge.fury.io/rb/oxcelix]
+
 == Description
 
 Oxcelix is an xlsx (Excel 2007/2010) parser. The result of the parsing is a
 Workbook which is an array of Sheet objects, which in turn store the data in
 Matrix objects. Matrices consist of Cell objects to maintain comments and
-formatting/style data
-.
+formatting/style data.
+
 Oxcelix uses the great Ox gem (http://rubygems.org/gems/ox) for fast SAX-parsing.
 
 == Synopsis
