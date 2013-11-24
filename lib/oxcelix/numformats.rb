@@ -47,7 +47,49 @@ else
 end
 
 def numeric value, fmt
-  ostring = '%'
+  ostring = "%"
+  strippedfmt = fmt.gsub /\?/, '0'
+  puts "fmt: #{fmt}, strippedfmt: #{strippedfmt}"
+  prefix, decimals, sep, floats, expo, postfix=/(^[^\#0e].?)?([\#0]*)?(.)?([\#0]*)?(e.?)?(.?[^\#0e]$)?/i.match(strippedfmt).captures
+  ostring.prepend prefix.to_s
+  puts "prefix: #{prefix}, decimals: #{decimals}, sep:#{sep}, floats: #{floats}, expo: #{expo}, postfix: #{postfix}"
+  if !decimals.nil? && decimals.size != 0
+    if (eval decimals) == nil
+      ostring += "##{decimals.size}"
+    elsif (eval decimals) == 0
+      ostring += decimals.size.to_s
+    end
+  else
+    ostring += decimals
+  end
+  ostring += sep.to_s
+  if !floats.nil? && floats.size != 0
+    ostring += ((floats.size.to_s) +"f")
+  end
+  if sep.nil? && floats.nil? || floats.size == 0
+    ostring += "d"
+  end
+  ostring += (expo.to_s + postfix.to_s)
+  puts "ostring: #{ostring}"
+  return ostring
+end
+
+  def vgrp str
+    if !str.size == 0
+      if eval(str) == nil #hashes
+        return ("#" + str.size.to_s) #nem jo, mindig oda fogja tenni!!!!!! vissza az eredeti fuggvenybe!!!!
+      elsif eval(str) == 0 #zeroes
+        return str.size.to_s
+      end
+    else
+      return nil
+    end
+  end
+
+
+
+
+
   #grp=0
   hashes = 0
   zeroes = 0
