@@ -1,7 +1,6 @@
 module Oxcelix
   module Numformats
-  	def fmtarr
-  	  return [
+  	Formatarray = [
   	  	{:id => '0', :xl => 'General', :ostring => nil, :cls => 'string'},
 		{:id => '1', :xl => '0', :ostring => '%1d', :cls => 'numeric'},
 		{:id => '2', :xl => '0.00', :ostring => '%1.2f', :cls => 'numeric'},
@@ -168,6 +167,5 @@ module Oxcelix
 		{:id => '163', :xl => '', :ostring => nil, :cls => 'string'},
 		{:id => '163', :xl => '', :ostring => nil, :cls => 'string'}
 	  ]
-    end
-  end
+	end
 end
