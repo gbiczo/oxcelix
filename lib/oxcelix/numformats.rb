@@ -25,7 +25,7 @@ module Oxcelix
             ostring = nil
             cls = 'string'
           end
-          Numformats::Formatarray << {:id => x[:numFmtId].to_s, :xl => x[:formatCode].to_s, :ostring => ostring, :cls => cls}
+          Formatarray << {:id => x[:numFmtId].to_s, :xl => x[:formatCode].to_s, :ostring => ostring, :cls => cls}
         end
       end
       
@@ -67,41 +67,39 @@ module Oxcelix
                          .gsub(/im/, 'ii')
                          .gsub(/m(?<div>.)(?<secs>s)/, 'i\k<div>\k<secs>')
                          .gsub(/mi/, 'ii')
-        return deminutified.gsub(/[yMmDdHhSsi]*/, Numformats::Dtmap)
+        return deminutified.gsub(/[yMmDdHhSsi]*/, Dtmap)
       end
     end
     
     module Numberhelper
       include Numformats
       # Get the cell's value and excel format string and return a string, a ruby Numeric or a DateTime object accordingly
-      def to_ru cell
-        if @numformats[cell.numformat.to_i][:xl] == nil || @numformats[cell.numformat.to_i][:xl].downcase == "general"
-          return cell.value
+      def to_ru
+        if Numformats::Formatarray[@numformat.to_i][:xl] == nil || Numformats::Formatarray[@numformat.to_i][:xl].downcase == "general"
+          return @value
         end
-        if @numformats[cell.numformat.to_i][:cls] == 'numeric' || @numformats[cell.numformat.to_i][:cls] == 'rational'
-          return eval cell.value
-        elsif @numformats[cell.numformat.to_i][:cls] == 'date'
-          if (0.0..1.0).include? cell.value
-            return DateTime.new(1900, 01, 01) + (eval cell.value)
+        if Numformats::Formatarray[@numformat.to_i][:cls] == 'numeric' || Numformats::Formatarray[@numformat.to_i][:cls] == 'rational'
+          return eval @value
+        elsif Numformats::Formatarray[@numformat.to_i][:cls] == 'date'
+          if (0.0..1.0).include? @value
+            return DateTime.new(1900, 01, 01) + (eval @value)
           else
-            return DateTime.new(1899, 12, 31) + (eval cell.value)
+            return DateTime.new(1899, 12, 31) + (eval @value)
           end
         else
-          eval cell.value rescue cell.value
+          eval @value rescue @value
         end
       end
 
       # Get the cell's value, convert it with to_ru and finally, format it based on the value's type.
       def to_fmt
-        if @numformats[@numberformat.to_i][:cls] == 'date'
-          datetime to_ru
-        elsif @numformats[@numberformat.to_i][:cls] == 'numeric' || @numformats[@numberformat.to_i][:cls] == 'rational'
-          numeric to_ru
+        if Numformats::Formatarray[@numformat][:cls] == 'date'
+          self.to_ru.strftime(datetime(Numformats::Formatarray[@numformat][:xl]))
+        elsif Numformats::Formatarray[@numformat.to_i][:cls] == 'numeric' || Numformats::Formatarray[@numformat.to_i][:cls] == 'rational'
+          sprintf(numeric(Numformats::Formatarray[@numformat][:xl]), self.to_ru)
         else 
-          return @value.to_s
+          return @value
         end
       end
-
-      private
     end
   end

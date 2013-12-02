@@ -17,5 +17,6 @@ module Oxcelix
     attr_accessor :xlcoords, :type, :value, :comment, :style, :numformat
     include Cellhelper
     include Cellvalues
+    include Numberhelper
   end
 end
