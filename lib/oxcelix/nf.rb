@@ -1,5 +1,7 @@
 module Oxcelix
   module Numformats
+  	# Formatarray is the array of default format strings in Excel. Nil values should apparently contain CJK date format strings, 
+  	#feel free to add/document those according to existing standards. 
   	Formatarray = [
   	  	{:id => '0', :xl => 'General', :ostring => nil, :cls => 'string'},
 		{:id => '1', :xl => '0', :ostring => '%1d', :cls => 'numeric'},
@@ -165,7 +167,6 @@ module Oxcelix
 		{:id => '161', :xl => '', :ostring => nil, :cls => 'string'},
 		{:id => '162', :xl => '', :ostring => nil, :cls => 'string'},
 		{:id => '163', :xl => '', :ostring => nil, :cls => 'string'},
-		{:id => '163', :xl => '', :ostring => nil, :cls => 'string'}
 	  ]
 	end
 end

@@ -6,7 +6,7 @@ module Oxcelix
   # style array, which in turn points to a number format (numFmt) that can be
   # either built-in (@formats) or defined in the styles.xml itself.
   class Styles < ::Ox::Sax
-    attr_accessor :styleary, :xmlstack, :temparray #,:formats, :defined_formats, 
+    attr_accessor :styleary, :xmlstack, :temparray
     def initialize
       @temparray=[]
       @styleary=[]
@@ -33,6 +33,7 @@ module Oxcelix
     def formatCode str
       nf :formatCode, str
     end
+    
     def start_element(name)
       @xmlstack << name
     end

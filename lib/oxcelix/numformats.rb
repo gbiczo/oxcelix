@@ -7,8 +7,9 @@ module Oxcelix
                     'm'=>'%-m', 'dddd'=>'%A', 'ddd'=>'%a', 'dd'=>'%d', 'd'=>'%-d', 'yyyy'=>'%Y', \
                     'yy'=>'%y', 'AM/PM'=>'%p', 'A/P'=>'%p', '.0'=>'', 'ss'=>'%-S', 's'=>'%S'}
 
-      # Convert the temporary format array to a series of hashes containing an id, an excel format string, a converted
-      # format string and an object class the format is interpreted on.
+      # Convert the temporary format array (the collection of non-default number formatting strings defined in the excel sheet in use)
+      # to a series of hashes containing an id, an excel format string, a converted format string and an object class the format is
+      # interpreted on.
       def add fmtary
         fmtary.each do |x|
           if x[:formatCode] =~ /[#0%\?]/
@@ -71,21 +72,22 @@ module Oxcelix
       end
     end
     
+    # The Numberhelper module implements methods that return the formatted value or the value converted into a Ruby type (DateTime, Numeric, etc)
     module Numberhelper
       include Numformats
       # Get the cell's value and excel format string and return a string, a ruby Numeric or a DateTime object accordingly
       def to_ru
-        if Numformats::Formatarray[@numformat.to_i][:xl] == nil || Numformats::Formatarray[@numformat.to_i][:xl].downcase == "general"
+        if !@value.numeric? || Numformats::Formatarray[@numformat.to_i][:xl] == nil || Numformats::Formatarray[@numformat.to_i][:xl].downcase == "general"
           return @value
         end
         if Numformats::Formatarray[@numformat.to_i][:cls] == 'numeric' || Numformats::Formatarray[@numformat.to_i][:cls] == 'rational'
           return eval @value
         elsif Numformats::Formatarray[@numformat.to_i][:cls] == 'date'
-          if (0.0..1.0).include? @value
-            return DateTime.new(1900, 01, 01) + (eval @value)
-          else
-            return DateTime.new(1899, 12, 31) + (eval @value)
-          end
+          # if (0.0..1.0).include? @value
+          #   return DateTime.new(1900, 01, 01) + (eval @value)
+          # else
+            return DateTime.new(1899, 12, 30) + (eval @value)
+#          end
         else
           eval @value rescue @value
         end
@@ -93,12 +95,14 @@ module Oxcelix
 
       # Get the cell's value, convert it with to_ru and finally, format it based on the value's type.
       def to_fmt
-        if Numformats::Formatarray[@numformat][:cls] == 'date'
-          self.to_ru.strftime(datetime(Numformats::Formatarray[@numformat][:xl]))
-        elsif Numformats::Formatarray[@numformat.to_i][:cls] == 'numeric' || Numformats::Formatarray[@numformat.to_i][:cls] == 'rational'
-          sprintf(numeric(Numformats::Formatarray[@numformat][:xl]), self.to_ru)
-        else 
-          return @value
+        begin
+          if Numformats::Formatarray[@numformat][:cls] == 'date'
+            self.to_ru.strftime(datetime(Numformats::Formatarray[@numformat][:xl])) rescue @value
+          elsif Numformats::Formatarray[@numformat.to_i][:cls] == 'numeric' || Numformats::Formatarray[@numformat.to_i][:cls] == 'rational'
+            sprintf(numeric(Numformats::Formatarray[@numformat][:xl]), self.to_ru) rescue @value
+          else
+            return @value
+          end
         end
       end
     end
