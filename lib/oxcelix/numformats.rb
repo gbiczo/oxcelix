@@ -83,11 +83,7 @@ module Oxcelix
         if Numformats::Formatarray[@numformat.to_i][:cls] == 'numeric' || Numformats::Formatarray[@numformat.to_i][:cls] == 'rational'
           return eval @value
         elsif Numformats::Formatarray[@numformat.to_i][:cls] == 'date'
-          # if (0.0..1.0).include? @value
-          #   return DateTime.new(1900, 01, 01) + (eval @value)
-          # else
-            return DateTime.new(1899, 12, 30) + (eval @value)
-#          end
+          return DateTime.new(1899, 12, 30) + (eval @value)
         else
           eval @value rescue @value
         end
