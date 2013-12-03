@@ -72,7 +72,7 @@ module Oxcelix
       end
 
       styles.temparray.sort_by!{|st| st[:numFmtId].to_i}
-      add styles.temparray
+      add_custom_formats styles.temparray
       styles.styleary.map!{|s| Numformats::Formatarray[s.to_i][:id].to_i}
 
       @sheets.each do |x|

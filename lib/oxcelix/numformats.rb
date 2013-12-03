@@ -10,7 +10,7 @@ module Oxcelix
       # Convert the temporary format array (the collection of non-default number formatting strings defined in the excel sheet in use)
       # to a series of hashes containing an id, an excel format string, a converted format string and an object class the format is
       # interpreted on.
-      def add fmtary
+      def add_custom_formats fmtary
         fmtary.each do |x|
           if x[:formatCode] =~ /[#0%\?]/
             ostring = numeric x[:formatCode]
