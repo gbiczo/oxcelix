@@ -1,5 +1,6 @@
 Oxcelix
 =======
+<a href="http://badge.fury.io/rb/oxcelix"><img src="https://badge.fury.io/rb/oxcelix@2x.png" alt="Gem Version" height="18"></a>
 
 Oxcelix - A fast and simple .xlsx file parser
 
@@ -32,4 +33,4 @@ To include only some of the sheets:
 
 To have the values of the merged cells copied over the mergegroup:
 
-`w = Oxcelix::Workbook.new('whatever.xlsx', :mergecells => true)`
+`w = Oxcelix::Workbook.new('whatever.xlsx', :copymerge => true)`
