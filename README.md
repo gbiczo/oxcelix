@@ -35,6 +35,7 @@ Synopsis
     `w = Oxcelix::Workbook.new('whatever.xlsx', :copymerge => true)`
   
   Convert a Sheet object into a collection of ruby values or formatted ruby strings:
+  
     `require 'oxcelix'`
     `w = Oxcelix::Workbook.new('whatever.xlsx', :copymerge => true)`
     `w.sheets[0].to_ru # returns a Matrix of DateTime, Integer, etc objects`
