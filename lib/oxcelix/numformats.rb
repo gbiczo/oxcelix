@@ -76,6 +76,11 @@ module Oxcelix
     module Numberhelper
       include Numformats
       # Get the cell's value and excel format string and return a string, a ruby Numeric or a DateTime object accordingly
+      # @return [Object] A ruby object that holds and represents the value stored in the cell. Conversion is based on cell formatting.
+      # @example Get the value of a cell:
+      #   c = w.sheets[0]["B3"] # => <Oxcelix::Cell:0x00000002a5b368 @xlcoords="A3", @style="84", @type="n", @value="41155", @numformat=14>
+      #   c.to_ru # => <DateTime: 2012-09-03T00:00:00+00:00 ((2456174j,0s,0n),+0s,2299161j)>
+      #
       def to_ru
         if !@value.numeric? || Numformats::Formatarray[@numformat.to_i][:xl] == nil || Numformats::Formatarray[@numformat.to_i][:xl].downcase == "general"
           return @value
@@ -88,6 +93,12 @@ module Oxcelix
       end
 
       # Get the cell's value, convert it with to_ru and finally, format it based on the value's type.
+      # @return [String] Value gets formatted depending on its class. If it is a DateTime, the #DateTime.strftime method is used,
+      # if it holds a number, the #Kernel::sprintf is run.
+      # @example Get the formatted value of a cell:
+      #   c = w.sheets[0]["B3"] # => <Oxcelix::Cell:0x00000002a5b368 @xlcoords="A3", @style="84", @type="n", @value="41155", @numformat=14>
+      #   c.to_fmt # => "3/9/2012"
+      #
       def to_fmt
         begin
           if Numformats::Formatarray[@numformat][:cls] == 'date'

@@ -46,7 +46,7 @@ module Oxcelix
     def to_ru
       m=Matrix.build(self.row_size, self.column_size){nil}
       self.each_with_index do |x, row, col|
-        if x.nil?
+        if x.nil? || x.value.nil?
           m[row, col] = nil
         else
           m[row, col] = x.to_ru
@@ -63,7 +63,7 @@ module Oxcelix
     def to_fmt
       m=Matrix.build(self.row_size, self.column_size){nil}
       self.each_with_index do |x, row, col|
-        if x.nil?
+        if x.nil? || x.value.nil?
           m[row, col] = nil
         else
           m[row, col] = x.to_fmt
