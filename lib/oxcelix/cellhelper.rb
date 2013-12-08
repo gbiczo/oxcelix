@@ -1,40 +1,4 @@
-
 module Oxcelix
-  
-  
-  # The Numformats module encapsulates number formatting methods.  
-  module Numformats
-    NUMERICS=["0", "#", "\\?"]
-    DATES=["m", "d", "y", "h", "s", "a", "p"]
-    NUMERIC_SEPARATORS=["E-", "E-", "e+", "e-", ".", ",", "$", "-", "+", "/", "(", ")", ":", " ", "_", "*"]
-    DATE_SEPARATORS=["/", "-", "."]
-    OTHERS=["@", "text"]
-    AFFIXES=["%"]
-
-
-    # Get the cell's value and excel format string end return a string, a ruby Numeric or a DateTime object accordingly
-    def to_ru
-      if @numformat == nil
-        return @value
-      end
-      nums = /#{NUMERICS.join("|")}/
-      dates = /#{DATES.join("|")}/
-      n = nums === @numformat.downcase
-      d = dates === @numformat.downcase 
-
-      raise ArgumentError, "Excel format cannot be both date and numeric type" if d == n && n == true
-
-      if d
-        if (0.0..1.0).include? @value
-          return DateTime.new(1900, 01, 01) + (eval @value)
-        else
-          return DateTime.new(1899, 12, 31) + (eval @value)
-        end
-      else
-        eval @value rescue @value
-      end
-    end
-  end
 
   # The Cellvalues module provides methods for setting cell values. They are named after the relevant XML entitiesd and 
   # called directly by the Xlsheet SAX parser.

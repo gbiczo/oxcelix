@@ -17,20 +17,60 @@ Oxcelix uses the great Ox gem (http://rubygems.org/gems/ox) for fast SAX-parsing
 Synopsis
 --------
 
-To process an xlsx file:
+  To process an xlsx file:
 
-`require 'oxcelix'`
+    `require 'oxcelix'`
+    `w = Oxcelix::Workbook.new('whatever.xlsx')`
 
-`w = Oxcelix::Workbook.new('whatever.xlsx')`
+  To omit certain sheets:
 
-To omit certain sheets:
+    `w = Oxcelix::Workbook.new('whatever.xlsx', :exclude => ['sheet1', 'sheet2'])`
 
-`w = Oxcelix::Workbook.new('whatever.xlsx', :exclude => ['sheet1', 'sheet2'])`
+  Include only some of the sheets:
 
-To include only some of the sheets:
+    `w = Oxcelix::Workbook.new('whatever.xlsx', :include => ['sheet1', 'sheet2', 'sheet3'])`
 
-`w = Oxcelix::Workbook.new('whatever.xlsx', :include => ['sheet1', 'sheet2', 'sheet3'])`
+  To have the values of the merged cells copied over the mergegroup:
 
-To have the values of the merged cells copied over the mergegroup:
+    `w = Oxcelix::Workbook.new('whatever.xlsx', :copymerge => true)`
+  
+  Convert a Sheet object into a collection of ruby values or formatted ruby strings:
+  
+    `require 'oxcelix'`
+    `w = Oxcelix::Workbook.new('whatever.xlsx', :copymerge => true)`
+    `w.sheets[0].to_ru # returns a Matrix of DateTime, Integer, etc objects`
+    `w.sheets[0].to_fmt # returns a Matrix of formatted Strings based on the above.`
 
-`w = Oxcelix::Workbook.new('whatever.xlsx', :copymerge => true)`
+Installation
+------------
+
+  `gem install oxcelix`
+
+
+Advantages over other Excel parsers
+-----------------------------------
+
+Excel file processing involves XML document parsing. Usually, this is achieved by some XML library such as Nokogiri[http://nokogiri.org].
+
+
+The main drawbacks of this approach are memory usage and speed. The resulting object tree will be roughly as big
+as the original file, and during the parsing, they will both be stored in the memory, which can
+cause quite some complications when processing huge files. Also, interpreting every bit of an excel spreadsheet
+will slow down unnecessarily the process, if we only need the data stored in that file.
+
+
+The solution for the memory-consumption problem is SAX stream parsing.
+
+
+Oxcelix uses the SAX parser offered by Peter Ohler's Ox gem. Ox is fast and powerful enough to solve the speed issue.
+
+
+For a comparison of XML parsers, please consult the Ox homepage[http://www.ohler.com/dev/xml_with_ruby/xml_with_ruby.html].
+
+TODO
+----
+  * Implement RawWorkbook, ValueWorkbook, FormattedWorkbook
+  * include/exclude mechanism should extend to cell areas inside Sheet objects
+  * Possible speedups
+  * Further improvement to the formatting algorithms. Theoretically, to_fmt should be able to
+    split conditional-formatting strings and to display e.g. thousands separated number strings

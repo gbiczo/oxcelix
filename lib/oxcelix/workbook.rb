@@ -19,7 +19,10 @@ module Oxcelix
   class Workbook
     include Cellhelper
     include Workbookhelper
+    include Numformats
+    
     attr_accessor :sheets
+
     ##
     # Create a new {Workbook} object.
     #
@@ -69,10 +72,8 @@ module Oxcelix
       end
 
       styles.temparray.sort_by!{|st| st[:numFmtId].to_i}
-#      styles.temparray.each{|st| styles.defined_formats << st[:formatCode]}
-      styles.temparray.each{|st| styles.formats << st[:formatCode]}
-#      styles.formats += styles.defined_formats
-      styles.styleary.map!{|s| styles.formats[s.to_i]}
+      add_custom_formats styles.temparray
+      styles.styleary.map!{|s| Numformats::Formatarray[s.to_i][:id].to_i}
 
       @sheets.each do |x|
 
