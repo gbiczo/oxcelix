@@ -37,7 +37,7 @@ module Oxcelix
       # @return [String] a rubyish Kernel::Format string. 
       def numeric val
         ostring = "%"
-        strippedfmt = @numformat.gsub(/\?/, '0').gsub(',','')
+        strippedfmt = val.gsub(/\?/, '0').gsub(',','')
         prefix, decimals, sep, floats, expo, postfix=/(^[^\#0e].?)?([\#0]*)?(\.)?([\#0]*)?(e.?)?(.?[^\#0e]$)?/i.match(strippedfmt).captures
         ostring.prepend prefix.to_s
         if !decimals.nil? && decimals.size != 0
