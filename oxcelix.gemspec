@@ -3,8 +3,8 @@
 require 'rake'
 Gem::Specification.new do |s|
   s.name	= 'oxcelix'
-  s.version	= '0.3.1'
-  s.date	= '2013-12-07'
+  s.version	= '0.3.2'
+  s.date	= '2014-01-12'
   s.summary	= 'A fast Excel 2007/2010 file parser'
   s.description	= 'A fast Excel 2007/2010 (.xlsx) file parser that returns a collection of Matrix objects'
   s.authors	= 'Giovanni Biczo'
@@ -21,6 +21,6 @@ Gem::Specification.new do |s|
   s.license	= 'MIT'
   
   s.add_runtime_dependency "ox", [">= 2.0.6"]
-  s.add_runtime_dependency "rubyzip", [">= 0.9.9"]
+  s.add_runtime_dependency "rubyzip", [">= 1.1.0"]
   s.rdoc_options << '--all'
 end
