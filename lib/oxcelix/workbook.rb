@@ -49,7 +49,7 @@ module Oxcelix
     # * Converting each sheet to a Matrix object
     def initialize(filename, options={})
       @destination = Dir.pwd+'/tmp'
-      FileUtils.mkdir(@destination)
+      FileUtils.mkdir_p(@destination)
       Zip::File.open(filename){ |zip_file|
         zip_file.each{ |f| 
           f_path=File.join(@destination, f.name)
