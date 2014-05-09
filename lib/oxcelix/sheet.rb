@@ -55,6 +55,17 @@ module Oxcelix
       return m
     end
     
+    # Invokes the #Cell::to_ru method on each element of self, replacing each element of the Sheet with the value returned.
+    def to_ru!
+      self.each_with_index do |x, row, col|
+        if x.nil? || x.value.nil?
+          self[row, col] = nil
+        else
+          self[row, col] = x.to_ru
+        end
+      end
+    end
+
     # The to_fmt method returns a Matrix of "formatted" values. It basically builds a new Matrix
     # and puts the result of the #Cell::to_fmt method of every cell of the original sheet in
     # the corresponding Matrix cell. The #Cell::to_fmt will pass the original values to to_ru, and then
@@ -68,8 +79,18 @@ module Oxcelix
         else
           m[row, col] = x.to_fmt
         end
-     end
-     return m
-   end
- end
+      end
+      return m
+    end
+   # Invokes the #Cell::to_fmt method on each element of self, replacing each element of the Sheet with the value returned.
+    def to_fmt!
+      self.each_with_index do |x, row, col|
+        if x.nil? || x.value.nil?
+          self[row, col] = nil
+        else
+          self[row, col] = x.to_fmt
+        end
+      end
+    end
+  end
 end

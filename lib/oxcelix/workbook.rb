@@ -47,8 +47,19 @@ module Oxcelix
     # * Interpolation of the shared strings
     # * adding comments to the cells
     # * Converting each sheet to a Matrix object
-    def initialize(filename, options={})
+    def initialize(filename=nil, options={})
       @destination = Dir.pwd+'/tmp'
+      @sheets=[]
+      @sheetbase={}
+      @sharedstrings=[]
+      unless filename.nil?
+        unpack filename
+        open filename
+        parse filename, options
+      end
+    end
+
+    def unpack(filename)
       FileUtils.mkdir_p(@destination)
       Zip::File.open(filename){ |zip_file|
         zip_file.each{ |f| 
@@ -57,10 +68,9 @@ module Oxcelix
           zip_file.extract(f, f_path) unless File.exists?(f_path)
         }
       }
-      @sheets=[]
-      @sheetbase={}
-      @sharedstrings=[]
-      
+    end
+
+    def open(filename)
       f=IO.read(@destination + '/xl/workbook.xml')
       @a=Ox::load(f)
       
@@ -74,31 +84,38 @@ module Oxcelix
       styles.temparray.sort_by!{|st| st[:numFmtId].to_i}
       add_custom_formats styles.temparray
       styles.styleary.map!{|s| Numformats::Formatarray[s.to_i][:id].to_i}
+    end
 
+    def parse(filename, options={})
+      thrs = []
+      thrcount = 0
       @sheets.each do |x|
+        thrs[thrcount] = Thread.new
+        {
+          @sheet = Xlsheet.new()
 
-        @sheet = Xlsheet.new()
-
-        File.open(@destination+"/xl/#{x[:filename]}", 'r') do |f|
-          Ox.sax_parse(@sheet, f)
-        end
-        comments = mkcomments(x[:comments])
-        @sheet.cellarray.each do |sh|
-          sh.numformat = styles.styleary[sh.style.to_i]
-          if sh.type=="s"
-            sh.value = @sharedstrings[sh.value.to_i]
+          File.open(@destination+"/xl/#{x[:filename]}", 'r') do |f|
+            Ox.sax_parse(@sheet, f)
           end
-          if !comments.nil?
-            comm=comments.select {|c| c[:ref]==(sh.xlcoords)}
-            if comm.size > 0
-              sh.comment=comm[0][:comment]
+          comments = mkcomments(x[:comments])
+          @sheet.cellarray.each do |sh|
+            sh.numformat = styles.styleary[sh.style.to_i]
+            if sh.type=="s"
+              sh.value = @sharedstrings[sh.value.to_i]
             end
-            comments.delete_if{|c| c[:ref]==(sh.xlcoords)}
+            if !comments.nil?
+              comm=comments.select {|c| c[:ref]==(sh.xlcoords)}
+              if comm.size > 0
+                sh.comment=comm[0][:comment]
+              end
+              comments.delete_if{|c| c[:ref]==(sh.xlcoords)}
+            end
           end
+          x[:cells] = @sheet.cellarray
+          x[:mergedcells] = @sheet.mergedcells
         end
-        x[:cells] = @sheet.cellarray
-        x[:mergedcells] = @sheet.mergedcells
-      end
+        thrcount += 1
+      }
       FileUtils.remove_dir(@destination, true)
       matrixto options[:copymerge]
     end
@@ -217,10 +234,7 @@ module Oxcelix
     #  into every merged cell
     def matrixto(copymerge)
       @sheets.each_with_index do |sheet, i|
-        m=Sheet.build(sheet[:cells].last.y+1, sheet[:cells].last.x+1) {nil}
-        sheet[:cells].each do |c|
-          m[c.y, c.x] = c
-        end
+        m=buildsheet(sheet, i)
         if copymerge==true
           sheet[:mergedcells].each do |mc|
             a = mc.split(':')
@@ -232,20 +246,41 @@ module Oxcelix
             valuecell=mrange.to_a.flatten.compact[0]
             (x1..x2).each do |col|
               (y1..y2).each do |row|
-                if valuecell != nil
-                  valuecell.xlcoords=(col.col_name)+(row+1).to_s
-                  m[row, col]=valuecell
-                else
-                  valuecell=Cell.new
-                  valuecell.xlcoords=(col.col_name)+(row+1).to_s
-                  m[row, col]=valuecell
-                end
+                m, valuecell = mergevalues(m, col, row, valuecell)
               end
             end
           end
         end
         m.name=@sheets[i][:name]; m.sheetId=@sheets[i][:sheetId]; m.relationId=@sheets[i][:relationId]
         @sheets[i]=m
+      end
+    end
+
+    # buildsheet creates a matrix of the needed size and fills it with the cells. Mainly for internal use only. Useful for inheritance.
+    # @param [sheet, i] the actual sheetarray and the index of it in the array collection of parsed data.
+    # @return [Sheet] a Sheet object that stores the cell values. 
+
+    def buildsheet(sheet, i)
+      m=Sheet.build(sheet[:cells].last.y+1, sheet[:cells].last.x+1) {nil}
+      sheet[:cells].each do |c|
+        m[c.y, c.x] = c
+      end
+      return m
+    end
+
+    # Replace the empty values of the mergegroup with cell values or nil.
+    # @param [m, col, row, valuecell] the Sheet object, the address of the actual cell, the cell to be copied over the mergegroup.
+    # @return [m, valuecell] the sheet and the new (empty) cell or nil.
+    def mergevalues(m, col, row, valuecell)
+      if valuecell != nil
+        valuecell.xlcoords=(col.col_name)+(row+1).to_s
+        m[row, col]=valuecell
+        return m, valuecell
+      else
+        valuecell=Cell.new
+        valuecell.xlcoords=(col.col_name)+(row+1).to_s
+        m[row, col]=valuecell
+        return m, valuecell
       end
     end
   end
