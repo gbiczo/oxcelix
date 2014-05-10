@@ -1,4 +1,3 @@
-require "tmpdir"
 # The namespace for all classes and modules included on Oxcelix.
 module Oxcelix
   # Helper methods for the Workbook class
