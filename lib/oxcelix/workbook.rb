@@ -95,6 +95,7 @@ module Oxcelix
     def parse(filename, options={})
       thrs = []
       thrcount = 0
+      
       @sheets.each do |x|
         thrs[thrcount] = Thread.new
         {
@@ -244,7 +245,8 @@ module Oxcelix
       thrcount = 0
 
       @sheets.each_with_index do |sheet, i|
-        thrs[thrcount] = Thread.new {
+        thrs[thrcount] = Thread.new
+        {
           m=buildsheet(sheet, i)
           if copymerge==true
             sheet[:mergedcells].each do |mc|
@@ -264,11 +266,11 @@ module Oxcelix
           end
           m.name=@sheets[i][:name]; m.sheetId=@sheets[i][:sheetId]; m.relationId=@sheets[i][:relationId]
           @sheets[i]=m
-        end
-        thrcount += 1
-      }
-        thrs.each{|t| t.join}
+          thrcount += 1
+        }
       end
+      thrs.each{|t| t.join}
+    end
 
     # buildsheet creates a matrix of the needed size and fills it with the cells. Mainly for internal use only. Useful for inheritance.
     # @param [sheet, i] the actual sheetarray and the index of it in the array collection of parsed data.
