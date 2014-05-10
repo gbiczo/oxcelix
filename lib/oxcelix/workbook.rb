@@ -240,28 +240,35 @@ module Oxcelix
     # @return [Matrix] a Matrix object that stores the cell values, and, depending on the copymerge parameter, will copy the merged value
     #  into every merged cell
     def matrixto(copymerge)
+      thrs = []
+      thrcount = 0
+
       @sheets.each_with_index do |sheet, i|
-        m=buildsheet(sheet, i)
-        if copymerge==true
-          sheet[:mergedcells].each do |mc|
-            a = mc.split(':')
-            x1=x(a[0])
-            y1=y(a[0])
-            x2=x(a[1])
-            y2=y(a[1])
-            mrange=m.minor(y1..y2, x1..x2)
-            valuecell=mrange.to_a.flatten.compact[0]
-            (x1..x2).each do |col|
-              (y1..y2).each do |row|
-                m, valuecell = mergevalues(m, col, row, valuecell)
+        thrs[thrcount] = Thread.new {
+          m=buildsheet(sheet, i)
+          if copymerge==true
+            sheet[:mergedcells].each do |mc|
+              a = mc.split(':')
+              x1=x(a[0])
+              y1=y(a[0])
+              x2=x(a[1])
+              y2=y(a[1])
+              mrange=m.minor(y1..y2, x1..x2)
+              valuecell=mrange.to_a.flatten.compact[0]
+              (x1..x2).each do |col|
+                (y1..y2).each do |row|
+                  m, valuecell = mergevalues(m, col, row, valuecell)
+                end
               end
             end
           end
+          m.name=@sheets[i][:name]; m.sheetId=@sheets[i][:sheetId]; m.relationId=@sheets[i][:relationId]
+          @sheets[i]=m
         end
-        m.name=@sheets[i][:name]; m.sheetId=@sheets[i][:sheetId]; m.relationId=@sheets[i][:relationId]
-        @sheets[i]=m
+        thrcount += 1
+      }
+        thrs.each{|t| t.join}
       end
-    end
 
     # buildsheet creates a matrix of the needed size and fills it with the cells. Mainly for internal use only. Useful for inheritance.
     # @param [sheet, i] the actual sheetarray and the index of it in the array collection of parsed data.
