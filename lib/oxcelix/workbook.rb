@@ -59,6 +59,8 @@ module Oxcelix
       end
     end
 
+    # Unzips the excel file to a temporary directory. The directory will be removed at the end of the parsing stage.
+    # @param [filename]
     def unpack(filename)
       FileUtils.mkdir_p(@destination)
       Zip::File.open(filename){ |zip_file|
@@ -70,6 +72,8 @@ module Oxcelix
       }
     end
 
+    # Parses workbook metadata (sheet data, comments, shared strings)
+    # @param [filename]
     def open(filename)
       f=IO.read(@destination + '/xl/workbook.xml')
       @a=Ox::load(f)
@@ -86,6 +90,8 @@ module Oxcelix
       styles.styleary.map!{|s| Numformats::Formatarray[s.to_i][:id].to_i}
     end
 
+    # Parses sheet data by feeding the output of the Xlsheet SAX parser into the arrays representing the sheets.
+    # @param [filename, options]
     def parse(filename, options={})
       thrs = []
       thrcount = 0
@@ -116,6 +122,7 @@ module Oxcelix
         end
         thrcount += 1
       }
+      thrs.each{|t| t.join}
       FileUtils.remove_dir(@destination, true)
       matrixto options[:copymerge]
     end
@@ -259,7 +266,6 @@ module Oxcelix
     # buildsheet creates a matrix of the needed size and fills it with the cells. Mainly for internal use only. Useful for inheritance.
     # @param [sheet, i] the actual sheetarray and the index of it in the array collection of parsed data.
     # @return [Sheet] a Sheet object that stores the cell values. 
-
     def buildsheet(sheet, i)
       m=Sheet.build(sheet[:cells].last.y+1, sheet[:cells].last.x+1) {nil}
       sheet[:cells].each do |c|
