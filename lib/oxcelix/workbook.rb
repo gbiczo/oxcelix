@@ -290,4 +290,44 @@ module Oxcelix
       end
     end
   end
+  
+  # RawWorkbook is a Workbook that contains the raw values of the original Excel cells instead of Cell objects.
+  # The values are taken from the Sheet arrays by running the #Cell::value method.
+  class RawWorkbook < Workbook
+    private
+    def buildsheet(sheet, i)
+      m=Sheet.build(sheet[:cells].last.y+1, sheet[:cells].last.x+1) {nil}
+      sheet[:cells].each do |c|
+        m[c.y, c.x] = c.value
+      end
+      return m
+    end
+  end
+
+  # RuValueWorkbook is a Workbook that contains the "rubyfied" values of the original Excel cells instead of Cell objects
+  # (e.g. DateTime objects).
+  # The values are taken from the Sheet arrays by running the #Cell::to_ru method. The result will be exactly the same as if
+  # you ran the #Sheet::to_ru method, but it will be snappier as the merged cellgroups will not need to be processed.
+  class RuValueWorkbook < Workbook
+    def buildsheet(sheet, i)
+      m=Sheet.build(sheet[:cells].last.y+1, sheet[:cells].last.x+1) {nil}
+      sheet[:cells].each do |c|
+        m[c.y, c.x] = c.to_ru
+      end
+      return m
+    end
+  end
+
+  # FormattedWorkbook is a Workbook that contains the formatted values (strings) of the original Excel cells instead of Cell objects.
+  # The values are taken from the Sheet arrays by running the #Cell::to_fmt method. The result will be exactly the same as if
+  # you ran the #Sheet::to_fmt method, but it will be snappier as the merged cellgroups will not need to be processed.
+  class FormattedWorkbook < Workbook
+    def buildsheet(sheet, i)
+      m=Sheet.build(sheet[:cells].last.y+1, sheet[:cells].last.x+1) {nil}
+      sheet[:cells].each do |c|
+        m[c.y, c.x] = c.to_fmt
+      end
+      return m
+    end
+  end
 end
