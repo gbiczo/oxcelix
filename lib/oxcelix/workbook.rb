@@ -1,3 +1,4 @@
+require "tmpdir"
 # The namespace for all classes and modules included on Oxcelix.
 module Oxcelix
   # Helper methods for the Workbook class
@@ -48,7 +49,7 @@ module Oxcelix
     # * adding comments to the cells
     # * Converting each sheet to a Matrix object
     def initialize(filename=nil, options={})
-      @destination = Dir.pwd+'/tmp'
+      @destination = Dir.mktmpdir
       @sheets=[]
       @sheetbase={}
       @sharedstrings=[]
@@ -95,7 +96,7 @@ module Oxcelix
     def parse(filename, options={})
       thrs = []
       thrcount = 0
-      
+
       @sheets.each do |x|
         thrs[thrcount] = Thread.new
         {
