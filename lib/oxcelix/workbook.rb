@@ -272,7 +272,7 @@ module Oxcelix
       thrs.each{|t| t.join}
     end
 
-    # buildsheet creates a matrix of the needed size and fills it with the cells. Mainly for internal use only. Useful for inheritance.
+    # buildsheet creates a matrix of the needed size and fills it with the cells. Mainly for internal use only.
     # @param [sheet, i] the actual sheetarray and the index of it in the array collection of parsed data.
     # @return [Sheet] a Sheet object that stores the cell values. 
     def buildsheet(sheet, i)
@@ -304,6 +304,8 @@ module Oxcelix
   # The values are taken from the Sheet arrays by running the #Cell::value method.
   class RawWorkbook < Workbook
     private
+
+    # {include:Workbook}
     def buildsheet(sheet, i)
       m=Sheet.build(sheet[:cells].last.y+1, sheet[:cells].last.x+1) {nil}
       sheet[:cells].each do |c|
@@ -318,6 +320,9 @@ module Oxcelix
   # The values are taken from the Sheet arrays by running the #Cell::to_ru method. The result will be exactly the same as if
   # you ran the #Sheet::to_ru method, but it will be snappier as the merged cellgroups will not need to be processed.
   class RuValueWorkbook < Workbook
+    private
+
+    # {include:Workbook}
     def buildsheet(sheet, i)
       m=Sheet.build(sheet[:cells].last.y+1, sheet[:cells].last.x+1) {nil}
       sheet[:cells].each do |c|
@@ -331,6 +336,9 @@ module Oxcelix
   # The values are taken from the Sheet arrays by running the #Cell::to_fmt method. The result will be exactly the same as if
   # you ran the #Sheet::to_fmt method, but it will be snappier as the merged cellgroups will not need to be processed.
   class FormattedWorkbook < Workbook
+    private
+
+    # {include:Workbook}
     def buildsheet(sheet, i)
       m=Sheet.build(sheet[:cells].last.y+1, sheet[:cells].last.x+1) {nil}
       sheet[:cells].each do |c|
