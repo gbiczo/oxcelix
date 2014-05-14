@@ -32,7 +32,10 @@ module Oxcelix
     # element is a :c (column) or a :mergeCell (merged cell)
     # @param [String] name Start element
     def start_element(name)
-      if name == :c || name == :mergeCell
+      case name
+      when :c
+        @xmlstack << name
+      when :mergeCell
         @xmlstack << name
       end
     end
@@ -41,7 +44,10 @@ module Oxcelix
     # @param [String] name Element ends
     def end_element(name)
       @xmlstack.pop
-      if name == :c || name == :mergeCell
+      case name
+      when :c
+        @cell=Cell.new
+      when :mergeCell
         @cell=Cell.new
       end
     end

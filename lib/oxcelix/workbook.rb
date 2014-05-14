@@ -48,6 +48,7 @@ module Oxcelix
     # * adding comments to the cells
     # * Converting each sheet to a Matrix object
     def initialize(filename=nil, options={})
+      puts "Zisz!"
       @destination = Dir.mktmpdir
       @sheets=[]
       @sheetbase={}
@@ -74,56 +75,48 @@ module Oxcelix
 
     # Parses workbook metadata (sheet data, comments, shared strings)
     # @param [filename]
-    def open(filename)
+    def open(filename, options={})
       f=IO.read(@destination + '/xl/workbook.xml')
       @a=Ox::load(f)
       
       sheetdata(options); commentsrel; shstrings;
       
-      styles = Styles.new()
+      @styles = Styles.new()
       File.open(@destination + '/xl/styles.xml', 'r') do |f|
-        Ox.sax_parse(styles, f)
+        Ox.sax_parse(@styles, f)
       end
 
-      styles.temparray.sort_by!{|st| st[:numFmtId].to_i}
-      add_custom_formats styles.temparray
-      styles.styleary.map!{|s| Numformats::Formatarray[s.to_i][:id].to_i}
+      @styles.temparray.sort_by!{|st| st[:numFmtId].to_i}
+      add_custom_formats @styles.temparray
+      @styles.styleary.map!{|s| Numformats::Formatarray[s.to_i][:id].to_i}
     end
 
     # Parses sheet data by feeding the output of the Xlsheet SAX parser into the arrays representing the sheets.
     # @param [filename, options]
     def parse(filename, options={})
-      thrs = []
-      thrcount = 0
-
       @sheets.each do |x|
-        thrs[thrcount] = Thread.new
-        {
-          @sheet = Xlsheet.new()
+        @sheet = Xlsheet.new()
 
-          File.open(@destination+"/xl/#{x[:filename]}", 'r') do |f|
-            Ox.sax_parse(@sheet, f)
-          end
-          comments = mkcomments(x[:comments])
-          @sheet.cellarray.each do |sh|
-            sh.numformat = styles.styleary[sh.style.to_i]
-            if sh.type=="s"
-              sh.value = @sharedstrings[sh.value.to_i]
-            end
-            if !comments.nil?
-              comm=comments.select {|c| c[:ref]==(sh.xlcoords)}
-              if comm.size > 0
-                sh.comment=comm[0][:comment]
-              end
-              comments.delete_if{|c| c[:ref]==(sh.xlcoords)}
-            end
-          end
-          x[:cells] = @sheet.cellarray
-          x[:mergedcells] = @sheet.mergedcells
+        File.open(@destination+"/xl/#{x[:filename]}", 'r') do |f|
+          Ox.sax_parse(@sheet, f)
         end
-        thrcount += 1
-      }
-      thrs.each{|t| t.join}
+        comments = mkcomments(x[:comments])
+        @sheet.cellarray.each do |sh|
+          sh.numformat = @styles.styleary[sh.style.to_i]
+          if sh.type=="s"
+            sh.value = @sharedstrings[sh.value.to_i]
+          end
+          if !comments.nil?
+            comm=comments.select {|c| c[:ref]==(sh.xlcoords)}
+            if comm.size > 0
+              sh.comment=comm[0][:comment]
+            end
+            comments.delete_if{|c| c[:ref]==(sh.xlcoords)}
+          end
+        end
+        x[:cells] = @sheet.cellarray
+        x[:mergedcells] = @sheet.mergedcells
+      end
       FileUtils.remove_dir(@destination, true)
       matrixto options[:copymerge]
     end
@@ -241,12 +234,8 @@ module Oxcelix
     # @return [Matrix] a Matrix object that stores the cell values, and, depending on the copymerge parameter, will copy the merged value
     #  into every merged cell
     def matrixto(copymerge)
-      thrs = []
-      thrcount = 0
-
       @sheets.each_with_index do |sheet, i|
-        thrs[thrcount] = Thread.new
-        {
+#        thrs << Thread.new{
           m=buildsheet(sheet, i)
           if copymerge==true
             sheet[:mergedcells].each do |mc|
@@ -266,10 +255,7 @@ module Oxcelix
           end
           m.name=@sheets[i][:name]; m.sheetId=@sheets[i][:sheetId]; m.relationId=@sheets[i][:relationId]
           @sheets[i]=m
-          thrcount += 1
-        }
       end
-      thrs.each{|t| t.join}
     end
 
     # buildsheet creates a matrix of the needed size and fills it with the cells. Mainly for internal use only.
