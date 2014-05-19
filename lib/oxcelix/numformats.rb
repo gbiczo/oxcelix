@@ -87,7 +87,7 @@ module Oxcelix
         end
         if Numformats::Formatarray[@numformat.to_i][:cls] == 'date'
           return DateTime.new(1899, 12, 30) + (eval @value)
-        else Numformats::Formatarray[@numformat.to_i][:cls] == 'numeric' || Numformats::Formatarray[@numformat.to_i][:cls] == 'rational'
+        elsif Numformats::Formatarray[@numformat.to_i][:cls] == 'numeric' || Numformats::Formatarray[@numformat.to_i][:cls] == 'rational'
             return eval @value rescue @value
         end
       end
@@ -101,7 +101,7 @@ module Oxcelix
       #
       def to_fmt
         begin
-          if Numformats::Formatarray[@numformat][:cls] == 'date'
+          if Numformats::Formatarray[@numformat.to_i][:cls] == 'date'
               self.to_ru.strftime(Numformats::Formatarray[@numformat][:ostring]) rescue @value
           elsif Numformats::Formatarray[@numformat.to_i][:cls] == 'numeric' || Numformats::Formatarray[@numformat.to_i][:cls] == 'rational'
               sprintf(Numformats::Formatarray[@numformat][:ostring], self.to_ru) rescue @value
