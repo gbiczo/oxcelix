@@ -61,10 +61,11 @@ module Oxcelix
     # @param [String] name of the attribute.
     # @param [String] str Content of the attribute 
     def attr(name, str)
-      if @xmlstack.last == :c
+      case @xmlstack.last
+      when :c
         @cell.send name, str if @cell.respond_to?(name)
-      elsif xmlstack.last == :mergeCell && name == :ref
-        @mergedcells << str
+      when :mergeCell
+        @mergedcells << str if name == :ref
       end
     end
 
