@@ -26,7 +26,7 @@ module Oxcelix
     ##
     # Create a new {Workbook} object.
     #
-    # filename is the name of the Excel 2007/2010 file to be opened (xlsx)
+    # filename is the name of the Excel 2007/2010 file (xlsx) to be opened (Optional) 
     #
     # options is a collection of options that can be passed to Workbook.
     # Options may include:
@@ -34,11 +34,12 @@ module Oxcelix
     # the group of three merged cells <tt>|   a   |</tt> will become <tt>|a|a|a|</tt>
     # * :include (Ary) - an array of sheet names to be included
     # * :exclude (Ary) - an array of sheet names not to be processed
-    # * :values (Symbol) - cell values. This can be: :false, if the whole cell is needed, :excel, if the raw excel values need to be inserted
-    # and :ruby if ruby objects are preferred.
+    # * :values (Symbol) - cell values. This can be: :false, if the whole cell is needed, :excel, if the raw excel
+    # values need to be inserted and :ruby if ruby objects are preferred.
     #
-    # The excel file is first getting unzipped, then the workbook.xml file gets
-    # processed. This file stores sheet metadata, which will be filtered (by including
+    # If a filename gets passed, the excel file is first getting unzipped, then
+    # the workbook.xml file gets processed.
+    # This file stores sheet metadata, which will be filtered (by including
     # and excluding sheets from further processing)
     #
     # The next stage is building sheets.
