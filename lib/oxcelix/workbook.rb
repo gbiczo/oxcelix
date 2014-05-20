@@ -48,7 +48,6 @@ module Oxcelix
     # * adding comments to the cells
     # * Converting each sheet to a Matrix object
     def initialize(filename=nil, options={})
-      @destination = Dir.mktmpdir
       @sheets=[]
       @sheetbase={}
       @sharedstrings=[]
@@ -62,7 +61,7 @@ module Oxcelix
     # Unzips the excel file to a temporary directory. The directory will be removed at the end of the parsing stage.
     # @param [filename]
     def unpack(filename)
-      FileUtils.mkdir_p(@destination)
+      @destination = Dir.mktmpdir
       Zip::File.open(filename){ |zip_file|
         zip_file.each{ |f| 
           f_path=File.join(@destination, f.name)
