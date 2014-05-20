@@ -48,7 +48,6 @@ module Oxcelix
     # * adding comments to the cells
     # * Converting each sheet to a Matrix object
     def initialize(filename=nil, options={})
-      puts "Zisz!"
       @destination = Dir.mktmpdir
       @sheets=[]
       @sheetbase={}
@@ -75,7 +74,7 @@ module Oxcelix
 
     # Parses workbook metadata (sheet data, comments, shared strings)
     # @param [filename]
-    def open(filename, options={})
+    def open(options={})
       f=IO.read(@destination + '/xl/workbook.xml')
       @a=Ox::load(f)
       
@@ -93,7 +92,7 @@ module Oxcelix
 
     # Parses sheet data by feeding the output of the Xlsheet SAX parser into the arrays representing the sheets.
     # @param [filename, options]
-    def parse(filename, options={})
+    def parse(options={})
       @sheets.each do |x|
         @sheet = Xlsheet.new()
 
