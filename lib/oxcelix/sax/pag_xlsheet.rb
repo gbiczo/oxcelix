@@ -1,5 +1,5 @@
 module Oxcelix
-  class Paginatedsheet < Xlsheet
+  class Sheetpage < Xlsheet
     attr_accessor :xmlstack, :mergedcells, :cellarray, :cell
     
     def initialize(per_page, pageno)
