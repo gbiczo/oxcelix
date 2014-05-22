@@ -94,7 +94,13 @@ module Oxcelix
     # @param [filename, options]
     def parse(options={})
       @sheets.each do |x|
-        @sheet = Xlsheet.new()
+        if !options[:paginate].nil?
+          @sheet = Sheetpage.new(lines, page)
+        elsif !options[:cellrange].nil?
+          @sheet = Sheetrange.new(range_start, range_end)
+        else
+          @sheet = Xlsheet.new()
+        end
 
         File.open(@destination+"/xl/#{x[:filename]}", 'r') do |f|
           Ox.sax_parse(@sheet, f)
