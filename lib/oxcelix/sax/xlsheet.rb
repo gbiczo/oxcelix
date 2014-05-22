@@ -93,7 +93,8 @@ module Oxcelix
     end
     def text(str)
       if @xmlstack.last == :c
-        if @cell.type != "shared" && @cell.type != "e" && str.numeric? && (@cell.y.between? (@PER_PAGE*(@PAGENO-1), @PER_PAGE*@PAGENO-1))
+        if @cell.type != "shared" && @cell.type != "e" && str.numeric? && ((@PER_PAGE * (@PAGENO-1)..(@PER_PAGE*@PAGENO-1)).include?@cell.y)
+        #(@cell.y.between? ((@PER_PAGE*(@PAGENO-1)), (@PER_PAGE*@PAGENO-1))
           @cell.v str
           @cellarray << @cell
         end
@@ -113,7 +114,7 @@ module Oxcelix
    
     def text(str)
       if @xmlstack.last == :c
-        if @cell.type != "shared" && @cell.type != "e" && str.numeric? && ((@RANGE_START..@RANGE_END).include? @cell.xlcoords))
+        if @cell.type != "shared" && @cell.type != "e" && str.numeric? && ((@RANGE_START..@RANGE_END).include? @cell.xlcoords)
           @cell.v str
           @cellarray << @cell
         end
