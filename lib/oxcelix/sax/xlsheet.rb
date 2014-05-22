@@ -94,7 +94,6 @@ module Oxcelix
     def text(str)
       if @xmlstack.last == :c
         if @cell.type != "shared" && @cell.type != "e" && str.numeric? && ((@PER_PAGE * (@PAGENO-1)..(@PER_PAGE*@PAGENO-1)).include?@cell.y)
-        #(@cell.y.between? ((@PER_PAGE*(@PAGENO-1)), (@PER_PAGE*@PAGENO-1))
           @cell.v str
           @cellarray << @cell
         end
