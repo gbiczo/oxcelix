@@ -48,6 +48,7 @@ module Oxcelix
     # * Interpolation of the shared strings
     # * adding comments to the cells
     # * Converting each sheet to a Matrix object
+    # * Deleting the temporary directory that stores the XML files. 
     def initialize(filename=nil, options={})
       @sheets=[]
       @sheetbase={}
@@ -56,6 +57,7 @@ module Oxcelix
         unpack filename
         open filename
         parse filename, options
+        FileUtils.remove_dir(@destination, true)
       end
     end
 
@@ -122,7 +124,6 @@ module Oxcelix
         x[:cells] = @sheet.cellarray
         x[:mergedcells] = @sheet.mergedcells
       end
-      FileUtils.remove_dir(@destination, true)
       matrixto options[:copymerge]
     end
     
