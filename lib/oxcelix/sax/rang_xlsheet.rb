@@ -8,14 +8,15 @@ module Oxcelix
       super
     end
     
-    def attr(name, str)
-      # if PER_PAGE?
+    def text(str)
       if @xmlstack.last == :c
-        @cell.send name, str if @cell.respond_to?(name)
-      elsif xmlstack.last == :mergeCell && name == :ref
-        @mergedcells << str
+        if @cell.type != "shared" && @cell.type != "e" && str.numeric? && (@cell.y.between? (@PER_PAGE*(@PAGENO-1), @PER_PAGE*@PAGENO-1))
+          @cell.v str
+          @cellarray << @cell
+        end
+        @cell=Cell.new
       end
     end
-    
+
   end
 end
