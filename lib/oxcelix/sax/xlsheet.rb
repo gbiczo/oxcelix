@@ -89,7 +89,7 @@ module Oxcelix
     def initialize(per_page, pageno)
       @PER_PAGE=per_page
       @PAGENO=pageno
-      super
+      super()
     end
     def text(str)
       if @xmlstack.last == :c
@@ -108,7 +108,7 @@ module Oxcelix
     def initialize(range_start, range_end)
       @RANGE_START=range_start
       @RANGE_END=range_end
-      super
+      super()
     end
    
     def text(str)

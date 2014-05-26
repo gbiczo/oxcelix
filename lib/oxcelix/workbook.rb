@@ -78,9 +78,9 @@ module Oxcelix
     # @param [filename]
     def open(options={})
       f=IO.read(@destination + '/xl/workbook.xml')
-      @a=Ox::load(f)
+      a=Ox::load(f)
       
-      sheetdata(options); commentsrel; shstrings;
+      sheetdata(a, options); commentsrel; shstrings;
       
       @styles = Styles.new()
       File.open(@destination + '/xl/styles.xml', 'r') do |f|
@@ -97,6 +97,7 @@ module Oxcelix
     def parse(options={})
       @sheets.each do |x|
         if !options[:paginate].nil?
+          lines = options[:paginate][0]; page = options[:paginate][1]
           @sheet = Sheetpage.new(lines, page)
         elsif !options[:cellrange].nil?
           @sheet = Sheetrange.new(range_start, range_end)
@@ -137,8 +138,8 @@ module Oxcelix
     # included sheets.
     #
     # If *included_sheets* (the array of whitelisted sheets) is *nil*, the hash is added.
-    def sheetdata options={}
-      @a.locate("workbook/sheets/*").each do |x|
+    def sheetdata(a, options={})
+      a.locate("workbook/sheets/*").each do |x|
         @sheetbase[:name] = x[:name]
         @sheetbase[:sheetId] = x[:sheetId]
         @sheetbase[:relationId] = x[:"r:id"]
