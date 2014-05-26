@@ -75,7 +75,7 @@ module Oxcelix
     end
 
     # Parses workbook metadata (sheet data, comments, shared strings)
-    # @param [filename]
+    # @param [options]
     def open(options={})
       f=IO.read(@destination + '/xl/workbook.xml')
       a=Ox::load(f)
@@ -93,7 +93,7 @@ module Oxcelix
     end
 
     # Parses sheet data by feeding the output of the Xlsheet SAX parser into the arrays representing the sheets.
-    # @param [filename, options]
+    # @param [options]
     def parse(options={})
       @sheets.each do |x|
         if !options[:paginate].nil?
