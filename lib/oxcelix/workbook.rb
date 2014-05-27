@@ -100,7 +100,8 @@ module Oxcelix
           lines = options[:paginate][0]; page = options[:paginate][1]
           @sheet = Sheetpage.new(lines, page)
         elsif !options[:cellrange].nil?
-          @sheet = Sheetrange.new(range_start, range_end)
+          range = options[:cellrange]
+          @sheet = Sheetrange.new(range)
         else
           @sheet = Xlsheet.new()
         end

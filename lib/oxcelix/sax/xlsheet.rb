@@ -105,17 +105,20 @@ module Oxcelix
   class Sheetrange < Xlsheet
     attr_accessor :xmlstack, :mergedcells, :cellarray, :cell
     
-    def initialize(range_start, range_end)
-      @RANGE_START=range_start
-      @RANGE_END=range_end
+    def initialize(range)
+      @cell=Cell.new
+      @RANGE_START=range.begin
+      @RANGE_END=range.end
       super()
     end
    
     def text(str)
       if @xmlstack.last == :c
-        if @cell.type != "shared" && @cell.type != "e" && str.numeric? && ((@RANGE_START..@RANGE_END).include? @cell.xlcoords)
-          @cell.v str
-          @cellarray << @cell
+        if @cell.type != "shared" && @cell.type != "e" && str.numeric? 
+          if (((@cell.x(@RANGE_START)..@cell.x(@RANGE_END)).include? @cell.x) && ((@cell.y(@RANGE_START)..@cell.y(@RANGE_END)).include? @cell.y))
+            @cell.v str
+            @cellarray << @cell
+          end
         end
         @cell=Cell.new
       end
