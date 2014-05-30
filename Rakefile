@@ -1,3 +1,7 @@
+require 'bundler/setup'
+
+Bundler.require
+
 task :default => [:test]
 
 task :test do
