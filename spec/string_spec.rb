@@ -1,5 +1,6 @@
-#require './spec_helper'
-require '../lib/oxcelix.rb'
+require "rspec"
+require_relative './spec_helper.rb'
+require_relative '../lib/oxcelix.rb'
  describe "String object" do
   describe 'numeric?' do
     context "with numbers" do
