@@ -243,7 +243,6 @@ module Oxcelix
     #  into every merged cell
     def matrixto(copymerge)
       @sheets.each_with_index do |sheet, i|
-#        thrs << Thread.new{
           m=buildsheet(sheet, i)
           if copymerge==true
             sheet[:mergedcells].each do |mc|
