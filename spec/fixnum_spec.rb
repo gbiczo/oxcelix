@@ -1,5 +1,5 @@
 #require './spec_helper'
-require '../oxcelix.rb'
+require '../lib/oxcelix.rb'
  describe "Fixnum object" do
   describe '#col_name' do
     it "returns a string representing an excel column name" do
