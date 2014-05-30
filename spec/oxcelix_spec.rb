@@ -1,5 +1,5 @@
 #require './spec_helper'
-require '../oxcelix.rb'
+require '../lib/oxcelix.rb'
  describe "Oxcelix module" do
 # before :all do
  describe 'Workbook' do
