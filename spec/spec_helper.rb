@@ -1,3 +1,3 @@
-require_relative '../oxcelix'
+require_relative '../lib/oxcelix'
 
 require 'yaml'
