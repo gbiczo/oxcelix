@@ -1,7 +1,7 @@
 = \Oxcelix - A fast .xlsx file parser
 
 {<img src="https://badge.fury.io/rb/oxcelix.png" alt="Gem Version" />}[http://badge.fury.io/rb/oxcelix]
-
+{<img src="https://travis-ci.org/gbiczo/oxcelix.svg?branch=0.4.0" alt="Build Status" />}[https://travis-ci.org/gbiczo/oxcelix]
 == Description
 
 Oxcelix is an xlsx (Excel 2007/2010) parser. The result of the parsing is a
