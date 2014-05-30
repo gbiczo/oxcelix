@@ -1,5 +1,5 @@
 #require './spec_helper'
-require '../oxcelix.rb'
+require '../lib/oxcelix.rb'
  describe "Cell object" do
   describe '#r' do
     it "sets the value of xlcoords" do
