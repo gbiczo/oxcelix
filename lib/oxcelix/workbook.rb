@@ -61,6 +61,10 @@ module Oxcelix
       end
     end
 
+    at_exit do 
+      FileUtils.remove_dir(@destination, true)
+    end
+    
     # Unzips the excel file to a temporary directory. The directory will be removed at the end of the parsing stage.
     # @param [filename]
     def unpack(filename)
