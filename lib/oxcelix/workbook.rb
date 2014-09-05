@@ -267,9 +267,9 @@ module Oxcelix
               end
             end
           end
-          m.name=@sheets[i][:name]; m.sheetId=@sheets[i][:sheetId]; m.relationId=@sheets[i][:relationId]
-          @sheets[i]=m
         end
+        m.name=@sheets[i][:name]; m.sheetId=@sheets[i][:sheetId]; m.relationId=@sheets[i][:relationId]
+        @sheets[i]=m
       end
     end
 
