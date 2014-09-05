@@ -85,13 +85,6 @@ module Oxcelix
 
   class Sheetpage < Xlsheet
     attr_accessor :xmlstack, :mergedcells, :cellarray, :cell
-
-    class << @cellarray
-      def << value
-        super(value)
-        yield @cellarray
-      end
-    end
         
     def initialize(per_page, pageno)
       @PER_PAGE=per_page
@@ -111,13 +104,6 @@ module Oxcelix
 
   class Sheetrange < Xlsheet
     attr_accessor :xmlstack, :mergedcells, :cellarray, :cell
-    
-    class << @cellarray
-      def << value
-        super(value)
-        yield @cellarray
-      end
-    end
 
     def initialize(range)
       @cell=Cell.new
