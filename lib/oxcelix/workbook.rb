@@ -217,6 +217,9 @@ module Oxcelix
     #  into every merged cell
     def matrixto(copymerge)
       @sheets.each_with_index do |sheet, i|
+        if sheet[:cells].empty?
+          m=Sheet.build(0,0)
+        else
         m=Sheet.build(sheet[:cells].last.y+1, sheet[:cells].last.x+1) {nil}
         sheet[:cells].each do |c|
           m[c.y, c.x] = c
