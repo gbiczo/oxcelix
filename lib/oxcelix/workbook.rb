@@ -220,35 +220,36 @@ module Oxcelix
         if sheet[:cells].empty?
           m=Sheet.build(0,0)
         else
-        m=Sheet.build(sheet[:cells].last.y+1, sheet[:cells].last.x+1) {nil}
-        sheet[:cells].each do |c|
-          m[c.y, c.x] = c
-        end
-        if copymerge==true
-          sheet[:mergedcells].each do |mc|
-            a = mc.split(':')
-            x1=x(a[0])
-            y1=y(a[0])
-            x2=x(a[1])
-            y2=y(a[1])
-            mrange=m.minor(y1..y2, x1..x2)
-            valuecell=mrange.to_a.flatten.compact[0]
-            (x1..x2).each do |col|
-              (y1..y2).each do |row|
-                if valuecell != nil
-                  valuecell.xlcoords=(col.col_name)+(row+1).to_s
-                  m[row, col]=valuecell
-                else
-                  valuecell=Cell.new
-                  valuecell.xlcoords=(col.col_name)+(row+1).to_s
-                  m[row, col]=valuecell
+          m=Sheet.build(sheet[:cells].last.y+1, sheet[:cells].last.x+1) {nil}
+          sheet[:cells].each do |c|
+            m[c.y, c.x] = c
+          end
+          if copymerge==true
+            sheet[:mergedcells].each do |mc|
+              a = mc.split(':')
+              x1=x(a[0])
+              y1=y(a[0])
+              x2=x(a[1])
+              y2=y(a[1])
+              mrange=m.minor(y1..y2, x1..x2)
+              valuecell=mrange.to_a.flatten.compact[0]
+              (x1..x2).each do |col|
+                (y1..y2).each do |row|
+                  if valuecell != nil
+                    valuecell.xlcoords=(col.col_name)+(row+1).to_s
+                    m[row, col]=valuecell
+                  else
+                    valuecell=Cell.new
+                    valuecell.xlcoords=(col.col_name)+(row+1).to_s
+                    m[row, col]=valuecell
+                  end
                 end
               end
             end
           end
+          m.name=@sheets[i][:name]; m.sheetId=@sheets[i][:sheetId]; m.relationId=@sheets[i][:relationId]
+          @sheets[i]=m
         end
-        m.name=@sheets[i][:name]; m.sheetId=@sheets[i][:sheetId]; m.relationId=@sheets[i][:relationId]
-        @sheets[i]=m
       end
     end
   end
