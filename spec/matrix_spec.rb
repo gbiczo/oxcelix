@@ -1,5 +1,5 @@
 #require './spec_helper'
-require '../oxcelix.rb'
+require '../lib/oxcelix.rb'
  describe "Matrix object" do
   describe '#[]=' do
     it "should set a cell to a new value" do
