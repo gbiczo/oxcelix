@@ -247,6 +247,9 @@ module Oxcelix
     #  into every merged cell
     def matrixto(copymerge)
       @sheets.each_with_index do |sheet, i|
+        if sheet[:cells].empty?
+          m=Sheet.build(0,0)
+        else
           m=buildsheet(sheet, i)
           if copymerge==true
             sheet[:mergedcells].each do |mc|
@@ -266,6 +269,7 @@ module Oxcelix
           end
           m.name=@sheets[i][:name]; m.sheetId=@sheets[i][:sheetId]; m.relationId=@sheets[i][:relationId]
           @sheets[i]=m
+        end
       end
     end
 
