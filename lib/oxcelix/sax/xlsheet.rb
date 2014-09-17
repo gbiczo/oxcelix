@@ -71,7 +71,7 @@ module Oxcelix
           @cell.v str
           @cellarray << @cell
         end
-        cell=Cell.new
+        @cell=Cell.new
       end
     end
   end
