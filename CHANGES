@@ -1,0 +1,23 @@
+0.3.3
+* Will not terminate it a directory called 'tmp' already exists in the current directory.
+  Thanks to bhavinkamani for pointing this out.
+* Corrected type in xlsheet parser: empty cells near to non-empty ones will now be correctly handled
+
+0.3.2
+* The numeric method in numformats will now try to gsub the correct format value and not the format index.
+* Required rubyzip version number is now >=1.1.0. 0.9.9 which was apparently 
+  enough did not load - thanks to Fredrik Persen Fostvedt for spotting that out.
+* Clarification added to the readme: Thanks again to Fredrik!
+
+0.3.1
+* Sheet now has its very own to_ru and to_fmt methods. Also a to_m method has been added, which returns a Matrix of raw data.
+* Documentation changes.
+0.3.0
+* Number formats edition that includes:
+  Cell#to_ru and Cell#to_fmt.
+  Numberformats module
+  Numberhelper module
+0.2.4
+* Bugfix release
+0.2.2
+* Sheet < Matrix
