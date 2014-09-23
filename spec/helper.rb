@@ -1,9 +1,3 @@
-begin
-  require 'rack'
-rescue LoadError
-  require 'rubygems'
-  require 'rack'
-end
 
 testdir = File.dirname(__FILE__)
 
