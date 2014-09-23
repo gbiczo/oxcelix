@@ -1,4 +1,4 @@
-require './helper.rb'
+require_relative './helper.rb'
 require "rspec"
 require_relative './spec_helper.rb'
 require_relative '../lib/oxcelix.rb'
