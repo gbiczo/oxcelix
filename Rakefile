@@ -5,7 +5,7 @@ Bundler.require
 task :default => [:test]
 
 task :test do
-  ruby "spec/cell_spec.rb"
+  rspec "spec/cell_spec.rb"
   ruby "spec/fixnum_spec.rb"
   ruby "spec/matrix_spec.rb"
   ruby "spec/oxcelix_spec.rb"
