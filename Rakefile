@@ -1,4 +1,5 @@
 require 'bundler/setup'
+require 'rspec'
 
 Bundler.require
 
