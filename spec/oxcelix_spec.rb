@@ -7,7 +7,7 @@ require_relative '../lib/oxcelix.rb'
  describe 'Workbook' do
     context 'normal' do
       it "should open the excel file and return a Workbook object" do
-        file = './test.xlsx'
+        file = 'spec/test.xlsx'
         w=Oxcelix::Workbook.new(file)
         w.sheets.size.should == 2
         w.sheets[0].name.should=="Testsheet1"

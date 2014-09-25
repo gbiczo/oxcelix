@@ -65,7 +65,8 @@ module Oxcelix
       FileUtils.remove_dir(@destination, true)
     end
     
-    # Unzips the excel file to a temporary directory. The directory will be removed at the end of the parsing stage.
+    # Unzips the excel file to a temporary directory. The directory will be removed at the end of the parsing stage when invoked 
+    # by initialize, otherwise at exit.
     # @param [filename]
     def unpack(filename)
       @destination = Dir.mktmpdir
@@ -286,7 +287,7 @@ module Oxcelix
 
     # Replace the empty values of the mergegroup with cell values or nil.
     # @param [m, col, row, valuecell] the Sheet object, the address of the actual cell, the cell to be copied over the mergegroup.
-    # @return [Matrix, Cell] the sheet and the new (empty) cell or nil.
+    # @return [m, valuecell] the sheet and the new (empty) cell or nil.
     def mergevalues(m, col, row, valuecell)
       if valuecell != nil
         valuecell.xlcoords=(col.col_name)+(row+1).to_s
