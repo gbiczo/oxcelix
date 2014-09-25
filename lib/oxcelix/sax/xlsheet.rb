@@ -91,6 +91,7 @@ module Oxcelix
       @PAGENO=pageno
       super()
     end
+    
     def text(str)
       if @xmlstack.last == :c
         if @cell.type != "shared" && @cell.type != "e" && str.numeric? && ((@PER_PAGE * (@PAGENO-1)..(@PER_PAGE*@PAGENO-1)).include?@cell.y)
