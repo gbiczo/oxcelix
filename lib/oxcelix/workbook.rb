@@ -287,7 +287,7 @@ module Oxcelix
 
     # Replace the empty values of the mergegroup with cell values or nil.
     # @param [m, col, row, valuecell] the Sheet object, the address of the actual cell, the cell to be copied over the mergegroup.
-    # @return [m, valuecell] the sheet and the new (empty) cell or nil.
+    # @return [Matrix, Cell] the sheet and the new (empty) cell or nil.
     def mergevalues(m, col, row, valuecell)
       if valuecell != nil
         valuecell.xlcoords=(col.col_name)+(row+1).to_s
