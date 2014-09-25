@@ -5,7 +5,7 @@ require '../lib/oxcelix.rb'
  describe 'Workbook' do
     context 'normal' do
       it "should open the excel file and return a Workbook object" do
-        file = './test.xlsx'
+        file = 'spec/test.xlsx'
         w=Oxcelix::Workbook.new(file)
         w.sheets.size.should == 2
         w.sheets[0].name.should=="Testsheet1"
@@ -14,7 +14,7 @@ require '../lib/oxcelix.rb'
     end
     context 'with excluded sheets' do
       it "should open the sheets not excluded of the excel file" do
-        file = './test.xlsx'
+        file = 'spec/test.xlsx'
         w=Oxcelix::Workbook.new(file, {:exclude=>['Testsheet2']})
         w.sheets.size.should==1
         w.sheets[0].name.should=="Testsheet1"
@@ -22,7 +22,7 @@ require '../lib/oxcelix.rb'
     end
     context 'with included sheets' do
       it "should open only the included sheets of the excel file" do
-        file = './test.xlsx'
+        file = 'spec/test.xlsx'
         w=Oxcelix::Workbook.new(file, {:include=>['Testsheet2']})
         w.sheets.size.should==1
         w.sheets[0].name.should=="Testsheet2"
