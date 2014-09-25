@@ -1,5 +1,4 @@
 require "rspec"
-require_relative './spec_helper.rb'
 require_relative '../lib/oxcelix.rb'
 
  describe "Matrix object" do
@@ -8,6 +7,6 @@ require_relative '../lib/oxcelix.rb'
      m_obj=Matrix.build(4, 4){nil}
      m_obj[3,3]='foo'
      m_obj[3,3].should == 'foo'
-  end
-  end
+   end
+ end
 end
