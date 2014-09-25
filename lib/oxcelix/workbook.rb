@@ -55,8 +55,8 @@ module Oxcelix
       @sharedstrings=[]
       unless filename.nil?
         unpack filename
-        open filename
-        parse filename, options
+        open options
+        parse options
         FileUtils.remove_dir(@destination, true)
       end
     end
