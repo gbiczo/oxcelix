@@ -1,5 +1,4 @@
-require "rspec"
-require_relative './spec_helper.rb'
+#require_relative './spec_helper.rb'
 require_relative '../lib/oxcelix.rb'
 
  describe "Fixnum object" do

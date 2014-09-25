@@ -1,7 +1,5 @@
-require "rspec"
-require_relative './spec_helper.rb'
+#require "rspec"
 require_relative '../lib/oxcelix.rb'
-require_relative '../lib/oxcelix/cell.rb'
 
  describe "Cell" do
   describe '#r' do
