@@ -243,7 +243,6 @@ module Oxcelix
     # 
     # The matrix will replace the array of cells in the actual sheet.
     # @param [Bool] copymerge
-    # @yield a value to be put as a cell. e.g: matrixto true, { |x| x = x.value.to_ru } 
     # @return [Matrix] a Matrix object that stores the cell values, and, depending on the copymerge parameter, will copy the merged value
     #  into every merged cell
     def matrixto(copymerge)
