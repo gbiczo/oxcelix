@@ -325,10 +325,17 @@ module Oxcelix
     private
 
     # {include:Workbook}
-    def buildsheet(sheet, i)
-      m=Sheet.build(sheet[:cells].last.y+1, sheet[:cells].last.x+1) {nil}
+    def buildsheet(sheet, options)
+      ydiff, xdiff = 0,0
+      if !options[:paginate].nil?
+        ydiff = options[:paginate][0] * (options[:paginate][1]-1)
+      elsif !options[:cellrange].nil?
+        xdiff = x(options[:cellrange].begin)
+        ydiff = y(options[:cellrange].begin)
+      end
+      m=Sheet.build(sheet[:cells].last.y+1-ydiff, sheet[:cells].last.x+1-xdiff) {nil}
       sheet[:cells].each do |c|
-        m[c.y, c.x] = c.value
+        m[c.y-ydiff, c.x-xdiff] = c.value
       end
       return m
     end
@@ -342,10 +349,17 @@ module Oxcelix
     private
 
     # {include:Workbook}
-    def buildsheet(sheet, i)
-      m=Sheet.build(sheet[:cells].last.y+1, sheet[:cells].last.x+1) {nil}
+    def buildsheet(sheet, options)
+      ydiff, xdiff = 0,0
+      if !options[:paginate].nil?
+        ydiff = options[:paginate][0] * (options[:paginate][1]-1)
+      elsif !options[:cellrange].nil?
+        xdiff = x(options[:cellrange].begin)
+        ydiff = y(options[:cellrange].begin)
+      end
+      m=Sheet.build(sheet[:cells].last.y+1-ydiff, sheet[:cells].last.x+1-xdiff) {nil}
       sheet[:cells].each do |c|
-        m[c.y, c.x] = c.to_ru
+        m[c.y-ydiff, c.x-xdiff] = c.to_ru
       end
       return m
     end
@@ -359,9 +373,16 @@ module Oxcelix
 
     # {include:Workbook}
     def buildsheet(sheet, i)
-      m=Sheet.build(sheet[:cells].last.y+1, sheet[:cells].last.x+1) {nil}
+      ydiff, xdiff = 0,0
+      if !options[:paginate].nil?
+        ydiff = options[:paginate][0] * (options[:paginate][1]-1)
+      elsif !options[:cellrange].nil?
+        xdiff = x(options[:cellrange].begin)
+        ydiff = y(options[:cellrange].begin)
+      end
+      m=Sheet.build(sheet[:cells].last.y+1-ydiff, sheet[:cells].last.x+1-xdiff) {nil}
       sheet[:cells].each do |c|
-        m[c.y, c.x] = c.to_fmt
+        m[c.y-ydiff, c.x-xdiff] = c.to_fmt
       end
       return m
     end
