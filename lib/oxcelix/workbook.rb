@@ -303,7 +303,10 @@ module Oxcelix
     end
 
     # Replace the empty values of the mergegroup with cell values or nil.
-    # @param [m, col, row, valuecell] the Sheet object, the address of the actual cell, the cell to be copied over the mergegroup.
+    # @param [Matrix] m the Sheet object
+    # @param [Integer] col Column of the actual cell
+    # @param [Integer] row Row of the actual cell
+    # @param [Cell] valuecell A Cell containing the value to be copied over the mergegroup
     # @return [Matrix, Cell] the sheet and the new (empty) cell or nil.
     def mergevalues(m, col, row, valuecell)
       if valuecell != nil

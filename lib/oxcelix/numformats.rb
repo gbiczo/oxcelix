@@ -2,6 +2,7 @@ module Oxcelix
 # The Numformats module provides helper methods that either return the Cell object's raw @value as a ruby value
 # (e.g. Numeric, DateTime, String) or formats it according to the excel _numformat_ string (#Cell.numformat).
     module Numformats
+      # Map containing the Excel formatting strings and their ruby counterpart
       Dtmap = {'hh'=>'%H', 'ii'=>'%M', 'i'=>'%-M', 'H'=>'%-k', 'h'=>'%-k',\
                     'ss'=>'%-S', 's'=>'%S', 'mmmmm'=>'%b', 'mmmm'=>'%B', 'mmm'=>'%b', 'mm'=>'%m', \
                     'm'=>'%-m', 'dddd'=>'%A', 'ddd'=>'%a', 'dd'=>'%d', 'd'=>'%-d', 'yyyy'=>'%Y', \
