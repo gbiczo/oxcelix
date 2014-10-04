@@ -61,7 +61,7 @@ module Oxcelix
       end
 
       # Convert excel-style date formats into ruby DateTime strftime format strings
-      # @param [String] val an Excel number format string.
+      # @param [String] formatcode an Excel number format string.
       # @return [String] a DateTime::strftime format string.
       def datetime formatcode
         deminutified = formatcode.downcase.gsub(/(?<hrs>H|h)(?<div>.)m/, '\k<hrs>\k<div>i')

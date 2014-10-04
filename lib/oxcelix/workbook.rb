@@ -31,10 +31,11 @@ module Oxcelix
     # options is a collection of options that can be passed to Workbook.
     # Options may include:
     # * :copymerge (=> true/false) - Copy and repeat the content of the merged cells into the whole group, e.g. 
-    #   the group of three merged cells <tt>|   a   |</tt> will become <tt>|a|a|a|</tt>
-    # * :include (Ary) - an array of sheet names to be included
-    # * :exclude (Ary) - an array of sheet names not to be processed
-    # * :paginate (Ary) - an array that defines the number of lines to be included in the pagination and the page to be parsed
+    # the group of three merged cells <tt>|   a   |</tt>
+    # will become: <tt>|a|a|a|</tt>
+    # * :include (Array) - an array of sheet names to be included
+    # * :exclude (Array) - an array of sheet names not to be processed
+    # * :paginate (Array) - an array that defines the number of lines to be included in the pagination and the page to be parsed
     # * :cellrange (Range) - the range of cells to be included in parsing
     #
     # If a filename gets passed, the excel file is first getting unzipped, then
@@ -67,7 +68,7 @@ module Oxcelix
     
     # Unzips the excel file to a temporary directory. The directory will be removed at the end of the parsing stage when invoked 
     # by initialize, otherwise at exit.
-    # @param [filename]
+    # @param [String] filename the name of the Excel file to be unpacked
     def unpack(filename)
       @destination = Dir.mktmpdir
       Zip::File.open(filename){ |zip_file|
@@ -80,7 +81,7 @@ module Oxcelix
     end
 
     # Parses workbook metadata (sheet data, comments, shared strings)
-    # @param [options]
+    # @param [Hash] options Options affecting file opening, metadata collection and processing.
     def open(options={})
       f=IO.read(@destination + '/xl/workbook.xml')
       a=Ox::load(f)
@@ -98,7 +99,7 @@ module Oxcelix
     end
 
     # Parses sheet data by feeding the output of the Xlsheet SAX parser into the arrays representing the sheets.
-    # @param [options]
+    # @param [Hash] options Options that affect the parser.
     def parse(options={})
       @sheets.each do |x|
         if !options[:paginate].nil?
@@ -282,8 +283,8 @@ module Oxcelix
     # buildsheet creates a matrix of the needed size and fills it with the cells. Mainly for internal use only. 
     #   When paginating or parsing only a range of cells, the size of the matrix will be adjusted (no nil values
     #   will be left at the beginning of the sheet), to preserve memory.
-    # @param [sheet] the actual sheetarray.
-    # @param [Hash] options
+    # @param [Sheet] sheet the actual sheetarray.
+    # @param [Hash] options :paginate or :cellrange will affect the size of the matrix
     # @return [Sheet] a Sheet object that stores the cell values. 
     def buildsheet(sheet, options)
       ydiff, xdiff = 0,0
