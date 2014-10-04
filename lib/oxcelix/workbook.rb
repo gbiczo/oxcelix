@@ -256,7 +256,7 @@ module Oxcelix
         if sheet[:cells].empty?
           m=Sheet.build(0,0)
         else
-          m=buildsheet(sheet, i)
+          m=buildsheet(sheet, options)
           if options[:copymerge]==true
             sheet[:mergedcells].each do |mc|
               a = mc.split(':')
@@ -279,13 +279,24 @@ module Oxcelix
       end
     end
 
-    # buildsheet creates a matrix of the needed size and fills it with the cells. Mainly for internal use only.
-    # @param [sheet, i] the actual sheetarray and the index of it in the array collection of parsed data.
+    # buildsheet creates a matrix of the needed size and fills it with the cells. Mainly for internal use only. 
+    #   When paginating or parsing only a range of cells, the size of the matrix will be adjusted (no nil values
+    #   will be left at the beginning of the sheet), to preserve memory.
+    # @param [sheet] the actual sheetarray.
+    # @param [Hash] options
     # @return [Sheet] a Sheet object that stores the cell values. 
-    def buildsheet(sheet, i)
-      m=Sheet.build(sheet[:cells].last.y+1, sheet[:cells].last.x+1) {nil}
+    def buildsheet(sheet, options)
+      ydiff, xdiff = 0,0
+      if !options[:paginate].nil?
+        ydiff = options[:paginate][0] * (options[:paginate][1]-1)
+      elsif !options[:cellrange].nil?
+        xdiff = x(options[:cellrange].begin)
+        ydiff = y(options[:cellrange].begin)
+      end
+          
+      m=Sheet.build(sheet[:cells].last.y+1-ydiff, sheet[:cells].last.x+1-xdiff) {nil}
       sheet[:cells].each do |c|
-        m[c.y, c.x] = c
+        m[c.y-ydiff, c.x-xdiff] = c
       end
       return m
     end
