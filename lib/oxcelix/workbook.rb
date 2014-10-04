@@ -85,7 +85,7 @@ module Oxcelix
       f=IO.read(@destination + '/xl/workbook.xml')
       a=Ox::load(f)
       
-      sheetdata(a); commentsrel; shstrings;
+      sheetdata(a, options); commentsrel; shstrings;
       
       @styles = Styles.new()
       File.open(@destination + '/xl/styles.xml', 'r') do |f|
@@ -144,8 +144,8 @@ module Oxcelix
     # included sheets.
     #
     # If *included_sheets* (the array of whitelisted sheets) is *nil*, the hash is added.
-    def sheetdata(a)
-      a.locate("workbook/sheets/*").each do |x|
+    def sheetdata(wb_file, options)
+      wb_file.locate("workbook/sheets/*").each do |x|
         @sheetbase[:name] = x[:name]
         @sheetbase[:sheetId] = x[:sheetId]
         @sheetbase[:relationId] = x[:"r:id"]
