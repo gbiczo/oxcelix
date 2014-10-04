@@ -131,7 +131,7 @@ module Oxcelix
         x[:cells] = @sheet.cellarray
         x[:mergedcells] = @sheet.mergedcells
       end
-      matrixto options[:copymerge]
+      matrixto options
     end
     
     private
@@ -251,13 +251,13 @@ module Oxcelix
     # @param [Bool] copymerge
     # @return [Matrix] a Matrix object that stores the cell values, and, depending on the copymerge parameter, will copy the merged value
     #  into every merged cell
-    def matrixto(copymerge)
+    def matrixto(options)
       @sheets.each_with_index do |sheet, i|
         if sheet[:cells].empty?
           m=Sheet.build(0,0)
         else
           m=buildsheet(sheet, i)
-          if copymerge==true
+          if options[:copymerge]==true
             sheet[:mergedcells].each do |mc|
               a = mc.split(':')
               x1=x(a[0])
