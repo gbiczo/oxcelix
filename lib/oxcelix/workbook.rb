@@ -248,7 +248,7 @@ module Oxcelix
     # of each copied cell is changed to reflect the actual Excel coordinate.
     # 
     # The matrix will replace the array of cells in the actual sheet.
-    # @param [Bool] copymerge
+    # @param [Hash] options
     # @return [Matrix] a Matrix object that stores the cell values, and, depending on the copymerge parameter, will copy the merged value
     #  into every merged cell
     def matrixto(options)
