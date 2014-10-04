@@ -31,11 +31,11 @@ module Oxcelix
     # options is a collection of options that can be passed to Workbook.
     # Options may include:
     # * :copymerge (=> true/false) - Copy and repeat the content of the merged cells into the whole group, e.g. 
-    # the group of three merged cells <tt>|   a   |</tt> will become <tt>|a|a|a|</tt>
+    #   the group of three merged cells <tt>|   a   |</tt> will become <tt>|a|a|a|</tt>
     # * :include (Ary) - an array of sheet names to be included
     # * :exclude (Ary) - an array of sheet names not to be processed
-    # * :values (Symbol) - cell values. This can be: :false, if the whole cell is needed, :excel, if the raw excel
-    # values need to be inserted and :ruby if ruby objects are preferred.
+    # * :paginate (Ary) - an array that defines the number of lines to be included in the pagination and the page to be parsed
+    # * :cellrange (Range) - the range of cells to be included in parsing
     #
     # If a filename gets passed, the excel file is first getting unzipped, then
     # the workbook.xml file gets processed.
