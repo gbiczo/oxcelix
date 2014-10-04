@@ -171,6 +171,12 @@ module Oxcelix
         @sheetbase=Hash.new
       end
       sheetarr=@sheets.map{|i| i[:name]}
+      sheet_collection(sheetarr, options)
+    end
+    
+    # Build the array of working sheets based on the :include and :exclude parameters.
+    # @param[sheetarr, options]
+    def sheet_collection(sheetarr, options)
       if options[:include].nil?; options[:include]=[]; end
       if options[:include].to_a.size>0
         sheetarr.keep_if{|item| options[:include].to_a.detect{|d| d==item}}
@@ -179,7 +185,7 @@ module Oxcelix
       @sheets.keep_if{|item| sheetarr.detect{|d| d==item[:name]}}
       @sheets.uniq!
     end
-    
+
     # Build the relationship between sheets and the XML files storing the comments
     # to the actual sheet.
     def commentsrel
