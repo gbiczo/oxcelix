@@ -375,7 +375,7 @@ module Oxcelix
     private
 
     # {include:Workbook}
-    def buildsheet(sheet, i)
+    def buildsheet(sheet, options)
       ydiff, xdiff = 0,0
       if !options[:paginate].nil?
         ydiff = options[:paginate][0] * (options[:paginate][1]-1)
