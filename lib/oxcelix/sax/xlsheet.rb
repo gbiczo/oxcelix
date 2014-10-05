@@ -86,7 +86,7 @@ module Oxcelix
   # A class that is inherited from the Xlsheet parser, but only parses a "page" of the given sheet. 
   # Its initialize will honor the per_page option (lines per page) and the pageno option (actual page to be parsed)
   # Cells outside the actual page will be omitted from the parsing process.
-  class Sheetpage < Xlsheet
+  class PagSheet < Xlsheet
     attr_accessor :xmlstack, :mergedcells, :cellarray, :cell
         
     def initialize(per_page, pageno)
@@ -108,7 +108,7 @@ module Oxcelix
 
   # A class that is inherited from the Xlsheet parser, but only parses a given range of the given sheet. 
   # Its initialize will accept a range parameter. Cells outside this range will not be parsed at all.
-  class Sheetrange < Xlsheet
+  class Cellrange < Xlsheet
     attr_accessor :xmlstack, :mergedcells, :cellarray, :cell
 
     def initialize(range)

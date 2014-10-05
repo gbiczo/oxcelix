@@ -104,10 +104,10 @@ module Oxcelix
       @sheets.each do |x|
         if !options[:paginate].nil?
           lines = options[:paginate][0]; page = options[:paginate][1]
-          @sheet = Sheetpage.new(lines, page)
+          @sheet = PagSheet.new(lines, page)
         elsif !options[:cellrange].nil?
           range = options[:cellrange]
-          @sheet = Sheetrange.new(range)
+          @sheet = Cellrange.new(range)
         else
           @sheet = Xlsheet.new()
         end
