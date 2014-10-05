@@ -12,7 +12,7 @@ module Oxcelix
     end
   end
 
-  # The Workbook class will open the excel file, and convert it to a collection of
+  # A class that represents an Excel workbook. By default, it will open the excel file, and convert it to a collection of
   # Matrix objects
   # @!attribute [rw] sheets
   #   @return [Array] a collection of {Sheet} objects 
@@ -281,8 +281,8 @@ module Oxcelix
     end
 
     # buildsheet creates a matrix of the needed size and fills it with the cells. Mainly for internal use only. 
-    #   When paginating or parsing only a range of cells, the size of the matrix will be adjusted (no nil values
-    #   will be left at the beginning of the sheet), to preserve memory.
+    # When paginating or parsing only a range of cells, the size of the matrix will be adjusted (no nil values
+    # will be left at the beginning of the sheet), to preserve memory.
     # @param [Sheet] sheet the actual sheetarray.
     # @param [Hash] options :paginate or :cellrange will affect the size of the matrix
     # @return [Sheet] a Sheet object that stores the cell values. 
