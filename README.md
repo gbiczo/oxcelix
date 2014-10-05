@@ -1,6 +1,6 @@
 Oxcelix
 =======
-<a href="http://badge.fury.io/rb/oxcelix"><img src="https://badge.fury.io/rb/oxcelix@2x.png" alt="Gem Version" height="18"></a>
+<a href="http://badge.fury.io/rb/oxcelix"><img src="https://badge.fury.io/rb/oxcelix.svg" alt="Gem Version" height="18"></a>
 [![Build Status](https://travis-ci.org/gbiczo/oxcelix.svg?branch=0.4.0)](https://travis-ci.org/gbiczo/oxcelix)
 
 Oxcelix - A fast and simple .xlsx file parser
