@@ -1,6 +1,7 @@
 Oxcelix
 =======
 <a href="http://badge.fury.io/rb/oxcelix"><img src="https://badge.fury.io/rb/oxcelix@2x.png" alt="Gem Version" height="18"></a>
+[![Build Status](https://travis-ci.org/gbiczo/oxcelix.svg?branch=0.4.0)](https://travis-ci.org/gbiczo/oxcelix)
 
 Oxcelix - A fast and simple .xlsx file parser
 
@@ -40,6 +41,15 @@ Synopsis
     `w = Oxcelix::Workbook.new('whatever.xlsx', :copymerge => true)`
     `w.sheets[0].to_ru # returns a Matrix of DateTime, Integer, etc objects`
     `w.sheets[0].to_fmt # returns a Matrix of formatted Strings based on the above.`
+  OR:
+    `require 'oxcelix'`
+    `w = Oxcelix::RuValueWorkbook.new('whatever.xlsx', :copymerge => true)`
+    `w = Oxcelix::FormattedWorkbook.new('whatever.xlsx', :copymerge => true)`
+
+  You can parse an Excel file partially to save memory:
+    `require 'oxcelix'`
+    `w = Oxcelix::Workbook.new('whatever.xlsx', :cellrange => ('A3'..'R42')) # will only parse the cells included in the given range on every included sheet`
+    `w = Oxcelix::Workbook.new('whatever.xlsx', :paginate => [5,2]) # will only parse the second five-row group of every included sheet.`
 
 Installation
 ------------
@@ -61,10 +71,9 @@ Oxcelix uses the SAX parser offered by Peter Ohler's Ox gem. I found Ox SAX pars
 
 For a comparison of XML parsers, please consult the Ox homepage[http://www.ohler.com/dev/xml_with_ruby/xml_with_ruby.html].
 
+
 TODO
 ----
-  * Implement RawWorkbook, ValueWorkbook, FormattedWorkbook
   * include/exclude mechanism should extend to cell areas inside Sheet objects
-  * Possible speedups
   * Further improvement to the formatting algorithms. Theoretically, to_fmt should be able to
     split conditional-formatting strings and to display e.g. thousands separated number strings

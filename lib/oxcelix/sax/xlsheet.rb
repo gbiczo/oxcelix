@@ -32,7 +32,10 @@ module Oxcelix
     # element is a :c (column) or a :mergeCell (merged cell)
     # @param [String] name Start element
     def start_element(name)
-      if name == :c || name == :mergeCell
+      case name
+      when :c
+        @xmlstack << name
+      when :mergeCell
         @xmlstack << name
       end
     end
@@ -41,7 +44,10 @@ module Oxcelix
     # @param [String] name Element ends
     def end_element(name)
       @xmlstack.pop
-      if name == :c || name == :mergeCell
+      case name
+      when :c
+        @cell=Cell.new
+      when :mergeCell
         @cell=Cell.new
       end
     end
@@ -55,10 +61,11 @@ module Oxcelix
     # @param [String] name of the attribute.
     # @param [String] str Content of the attribute 
     def attr(name, str)
-      if @xmlstack.last == :c
+      case @xmlstack.last
+      when :c
         @cell.send name, str if @cell.respond_to?(name)
-      elsif xmlstack.last == :mergeCell && name == :ref
-        @mergedcells << str
+      when :mergeCell
+        @mergedcells << str if name == :ref
       end
     end
 
@@ -74,5 +81,56 @@ module Oxcelix
         @cell=Cell.new
       end
     end
+  end
+
+  # A class that is inherited from the Xlsheet parser, but only parses a "page" of the given sheet. 
+  # Its initialize will honor the per_page option (lines per page) and the pageno option (actual page to be parsed)
+  # Cells outside the actual page will be omitted from the parsing process. Mergegroups will only be included 
+  # if the starting cell is within the actual page
+  class PagSheet < Xlsheet
+    attr_accessor :xmlstack, :mergedcells, :cellarray, :cell
+        
+    def initialize(per_page, pageno)
+      @PER_PAGE=per_page
+      @PAGENO=pageno
+      super()
+    end
+    
+    def text(str)
+      if @xmlstack.last == :c
+        if @cell.type != "shared" && @cell.type != "e" && str.numeric? && ((@PER_PAGE * (@PAGENO-1)..(@PER_PAGE*@PAGENO-1)).include?@cell.y)
+          @cell.v str
+          @cellarray << @cell
+        end
+        @cell=Cell.new
+      end
+    end
+  end
+
+  # A class that is inherited from the Xlsheet parser, but only parses a given range of the given sheet. 
+  # Its initialize will accept a range parameter. Cells outside this range will not be parsed at all.
+  # Mergegroups will only be included if the starting cell is within the selected range.
+  class Cellrange < Xlsheet
+    attr_accessor :xmlstack, :mergedcells, :cellarray, :cell
+
+    def initialize(range)
+      @cell=Cell.new
+      @RANGE_START=range.begin
+      @RANGE_END=range.end
+      super()
+    end
+   
+    def text(str)
+      if @xmlstack.last == :c
+        if @cell.type != "shared" && @cell.type != "e" && str.numeric? 
+          if (((@cell.x(@RANGE_START)..@cell.x(@RANGE_END)).include? @cell.x) && ((@cell.y(@RANGE_START)..@cell.y(@RANGE_END)).include? @cell.y))
+            @cell.v str
+            @cellarray << @cell
+          end
+        end
+        @cell=Cell.new
+      end
+    end
+
   end
 end

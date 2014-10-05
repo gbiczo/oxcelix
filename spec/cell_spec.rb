@@ -1,6 +1,7 @@
-#require './spec_helper'
+#require "rspec"
 require_relative '../lib/oxcelix.rb'
- describe "Cell object" do
+
+ describe "Cell" do
   describe '#r' do
     it "sets the value of xlcoords" do
       c=Oxcelix::Cell.new

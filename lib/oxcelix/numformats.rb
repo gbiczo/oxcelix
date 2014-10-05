@@ -2,6 +2,7 @@ module Oxcelix
 # The Numformats module provides helper methods that either return the Cell object's raw @value as a ruby value
 # (e.g. Numeric, DateTime, String) or formats it according to the excel _numformat_ string (#Cell.numformat).
     module Numformats
+      # Map containing the Excel formatting strings and their ruby counterpart
       Dtmap = {'hh'=>'%H', 'ii'=>'%M', 'i'=>'%-M', 'H'=>'%-k', 'h'=>'%-k',\
                     'ss'=>'%-S', 's'=>'%S', 'mmmmm'=>'%b', 'mmmm'=>'%B', 'mmm'=>'%b', 'mm'=>'%m', \
                     'm'=>'%-m', 'dddd'=>'%A', 'ddd'=>'%a', 'dd'=>'%d', 'd'=>'%-d', 'yyyy'=>'%Y', \
@@ -61,7 +62,7 @@ module Oxcelix
       end
 
       # Convert excel-style date formats into ruby DateTime strftime format strings
-      # @param [String] val an Excel number format string.
+      # @param [String] formatcode an Excel number format string.
       # @return [String] a DateTime::strftime format string.
       def datetime formatcode
         deminutified = formatcode.downcase.gsub(/(?<hrs>H|h)(?<div>.)m/, '\k<hrs>\k<div>i')
@@ -87,7 +88,7 @@ module Oxcelix
         end
         if Numformats::Formatarray[@numformat.to_i][:cls] == 'date'
           return DateTime.new(1899, 12, 30) + (eval @value)
-        else Numformats::Formatarray[@numformat.to_i][:cls] == 'numeric' || Numformats::Formatarray[@numformat.to_i][:cls] == 'rational'
+        elsif Numformats::Formatarray[@numformat.to_i][:cls] == 'numeric' || Numformats::Formatarray[@numformat.to_i][:cls] == 'rational'
             return eval @value rescue @value
         end
       end
@@ -101,7 +102,7 @@ module Oxcelix
       #
       def to_fmt
         begin
-          if Numformats::Formatarray[@numformat][:cls] == 'date'
+          if Numformats::Formatarray[@numformat.to_i][:cls] == 'date'
               self.to_ru.strftime(Numformats::Formatarray[@numformat][:ostring]) rescue @value
           elsif Numformats::Formatarray[@numformat.to_i][:cls] == 'numeric' || Numformats::Formatarray[@numformat.to_i][:cls] == 'rational'
               sprintf(Numformats::Formatarray[@numformat][:ostring], self.to_ru) rescue @value
