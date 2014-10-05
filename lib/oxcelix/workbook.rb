@@ -104,19 +104,19 @@ module Oxcelix
       @sheets.each do |x|
         if !options[:paginate].nil?
           lines = options[:paginate][0]; page = options[:paginate][1]
-          @sheet = PagSheet.new(lines, page)
+          sheet = PagSheet.new(lines, page)
         elsif !options[:cellrange].nil?
           range = options[:cellrange]
-          @sheet = Cellrange.new(range)
+          sheet = Cellrange.new(range)
         else
-          @sheet = Xlsheet.new()
+          sheet = Xlsheet.new()
         end
 
         File.open(@destination+"/xl/#{x[:filename]}", 'r') do |f|
-          Ox.sax_parse(@sheet, f)
+          Ox.sax_parse(sheet, f)
         end
         comments = mkcomments(x[:comments])
-        @sheet.cellarray.each do |sh|
+        sheet.cellarray.each do |sh|
           sh.numformat = @styles.styleary[sh.style.to_i]
           if sh.type=="s"
             sh.value = @sharedstrings[sh.value.to_i]
@@ -129,8 +129,8 @@ module Oxcelix
             comments.delete_if{|c| c[:ref]==(sh.xlcoords)}
           end
         end
-        x[:cells] = @sheet.cellarray
-        x[:mergedcells] = @sheet.mergedcells
+        x[:cells] = sheet.cellarray
+        x[:mergedcells] = sheet.mergedcells
       end
       matrixto options
     end
