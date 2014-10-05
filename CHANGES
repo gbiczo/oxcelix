@@ -1,3 +1,13 @@
+0.4.0
+* Code refactoring - Workbook creation is now more fine-grained.
+* Speedups: case statements replaced some complex and reoccurring
+  'if' structures in the SAX-parsers. This can cause 2-15% speedups depending 
+  on the input file size.
+* New parser options: Cell range or "page" (:cellrange, :pagination)
+  selection is possible for memory saving (while preserving parsing speed too)
+* New workbook classes: RuWorkBook, ValueWorkbook, RawValueWorkbook
+* System temp directory is uses for unpacking.
+
 0.3.3
 * Will not terminate it a directory called 'tmp' already exists in the current directory.
   Thanks to bhavinkamani for pointing this out.
