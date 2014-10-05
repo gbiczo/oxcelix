@@ -20,10 +20,8 @@ Synopsis
 
   To process an xlsx file:
 
-    ```ruby
-    require 'oxcelix'
-    w = Oxcelix::Workbook.new('whatever.xlsx')
-    ```
+    `require 'oxcelix'`
+    `w = Oxcelix::Workbook.new('whatever.xlsx')`
 
   To omit certain sheets:
 
