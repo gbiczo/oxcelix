@@ -1,17 +1,17 @@
 require 'ox'
 module Oxcelix
 
-  # Ox based SAX parser which pushes the number formats (taken from the styles.xml file) to an array 
+  # Ox based SAX parser which pushes the number formats (taken from the styles.xml file) to an array
   # The reference taken from the cell's 's' attribute points to an element of the
   # style array, which in turn points to a number format (numFmt) that can be
   # either built-in (@formats) or defined in the styles.xml itself.
   class Styles < ::Ox::Sax
     attr_accessor :styleary, :xmlstack, :temparray
     def initialize
-      @temparray=[]
-      @styleary=[]
-      @xmlstack = []
-      @numform={}
+      @temparray = []
+      @styleary  = []
+      @xmlstack  = []
+      @numform   = {}
     end
 
     def nf key, value
@@ -33,7 +33,7 @@ module Oxcelix
     def formatCode str
       nf :formatCode, str
     end
-    
+
     def start_element(name)
       @xmlstack << name
     end
