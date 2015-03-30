@@ -22,10 +22,10 @@ module Oxcelix
   #   @return [Cell] the cell currently being processed.
     attr_accessor :xmlstack, :mergedcells, :cellarray, :cell
     def initialize()
-      @xmlstack = []
+      @xmlstack    = []
       @mergedcells = []
-      @cellarray = []
-      @cell = Cell.new
+      @cellarray   = []
+      @cell        = Cell.new
     end
 
     # Save SAX state-machine state to {#xmlstack} if and only if the processed
@@ -39,19 +39,19 @@ module Oxcelix
         @xmlstack << name
       end
     end
-    
+
     # Step back in the stack ({#xmlstack}.pop), clear actual cell information
     # @param [String] name Element ends
     def end_element(name)
       @xmlstack.pop
       case name
       when :c
-        @cell=Cell.new
+        @cell = Cell.new
       when :mergeCell
-        @cell=Cell.new
+        @cell = Cell.new
       end
     end
-    
+
     # Set cell value, style, etc. This will only happen if the cell has an
     # actual value AND the parser's state is :c.
     # If the state is :mergeCell AND the actual attribute name is :ref the
@@ -59,7 +59,7 @@ module Oxcelix
     # The attribute name is tested against the Cell object: if the cell
     # has a method named the same way, that method is called with the str parameter.
     # @param [String] name of the attribute.
-    # @param [String] str Content of the attribute 
+    # @param [String] str Content of the attribute
     def attr(name, str)
       case @xmlstack.last
       when :c
@@ -78,57 +78,57 @@ module Oxcelix
           @cell.v str
           @cellarray << @cell
         end
-        @cell=Cell.new
+        @cell = Cell.new
       end
     end
   end
 
-  # A class that is inherited from the Xlsheet parser, but only parses a "page" of the given sheet. 
+  # A class that is inherited from the Xlsheet parser, but only parses a "page" of the given sheet.
   # Its initialize will honor the per_page option (lines per page) and the pageno option (actual page to be parsed)
-  # Cells outside the actual page will be omitted from the parsing process. Mergegroups will only be included 
+  # Cells outside the actual page will be omitted from the parsing process. Mergegroups will only be included
   # if the starting cell is within the actual page
   class PagSheet < Xlsheet
     attr_accessor :xmlstack, :mergedcells, :cellarray, :cell
-        
+
     def initialize(per_page, pageno)
-      @PER_PAGE=per_page
-      @PAGENO=pageno
+      @PER_PAGE = per_page
+      @PAGENO   = pageno
       super()
     end
-    
+
     def text(str)
       if @xmlstack.last == :c
         if @cell.type != "shared" && @cell.type != "e" && str.numeric? && ((@PER_PAGE * (@PAGENO-1)..(@PER_PAGE*@PAGENO-1)).include?@cell.y)
           @cell.v str
           @cellarray << @cell
         end
-        @cell=Cell.new
+        @cell = Cell.new
       end
     end
   end
 
-  # A class that is inherited from the Xlsheet parser, but only parses a given range of the given sheet. 
+  # A class that is inherited from the Xlsheet parser, but only parses a given range of the given sheet.
   # Its initialize will accept a range parameter. Cells outside this range will not be parsed at all.
   # Mergegroups will only be included if the starting cell is within the selected range.
   class Cellrange < Xlsheet
     attr_accessor :xmlstack, :mergedcells, :cellarray, :cell
 
     def initialize(range)
-      @cell=Cell.new
-      @RANGE_START=range.begin
-      @RANGE_END=range.end
+      @cell        = Cell.new
+      @RANGE_START = range.begin
+      @RANGE_END   = range.end
       super()
     end
-   
+
     def text(str)
       if @xmlstack.last == :c
-        if @cell.type != "shared" && @cell.type != "e" && str.numeric? 
+        if @cell.type != "shared" && @cell.type != "e" && str.numeric?
           if (((@cell.x(@RANGE_START)..@cell.x(@RANGE_END)).include? @cell.x) && ((@cell.y(@RANGE_START)..@cell.y(@RANGE_END)).include? @cell.y))
             @cell.v str
             @cellarray << @cell
           end
         end
-        @cell=Cell.new
+        @cell = Cell.new
       end
     end
 

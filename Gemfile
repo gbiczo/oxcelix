@@ -1,8 +1,4 @@
 source 'https://rubygems.org'
-gem 'ox'
-gem 'rubyzip'
-gem 'rspec'
 
-group :test do
-  gem 'rake'
-end
+# Specify your gem's dependencies in excel_facts.gemspec
+gemspec

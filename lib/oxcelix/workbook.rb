@@ -15,22 +15,22 @@ module Oxcelix
   # A class that represents an Excel workbook. By default, it will open the excel file, and convert it to a collection of
   # Matrix objects
   # @!attribute [rw] sheets
-  #   @return [Array] a collection of {Sheet} objects 
+  #   @return [Array] a collection of {Sheet} objects
   class Workbook
     include Cellhelper
     include Workbookhelper
     include Numformats
-    
+
     attr_accessor :sheets
 
     ##
     # Create a new {Workbook} object.
     #
-    # filename is the name of the Excel 2007/2010 file (xlsx) to be opened (Optional) 
+    # filename is the name of the Excel 2007/2010 file (xlsx) to be opened (Optional)
     #
     # options is a collection of options that can be passed to Workbook.
     # Options may include:
-    # * :copymerge (=> true/false) - Copy and repeat the content of the merged cells into the whole group, e.g. 
+    # * :copymerge (=> true/false) - Copy and repeat the content of the merged cells into the whole group, e.g.
     # the group of three merged cells <tt>|   a   |</tt>
     # will become: <tt>|a|a|a|</tt>
     # * :include (Array) - an array of sheet names to be included
@@ -49,7 +49,7 @@ module Oxcelix
     # * Interpolation of the shared strings
     # * adding comments to the cells
     # * Converting each sheet to a Matrix object
-    # * Deleting the temporary directory that stores the XML files. 
+    # * Deleting the temporary directory that stores the XML files.
     def initialize(filename=nil, options={})
       @sheets=[]
       @sheetbase={}
@@ -62,17 +62,17 @@ module Oxcelix
       end
     end
 
-    at_exit do 
+    at_exit do
       FileUtils.remove_dir(@destination, true)
     end
-    
-    # Unzips the excel file to a temporary directory. The directory will be removed at the end of the parsing stage when invoked 
+
+    # Unzips the excel file to a temporary directory. The directory will be removed at the end of the parsing stage when invoked
     # by initialize, otherwise at exit.
     # @param [String] filename the name of the Excel file to be unpacked
     def unpack(filename)
       @destination = Dir.mktmpdir
       Zip::File.open(filename){ |zip_file|
-        zip_file.each{ |f| 
+        zip_file.each{ |f|
           f_path=File.join(@destination, f.name)
           FileUtils.mkdir_p(File.dirname(f_path))
           zip_file.extract(f, f_path) unless File.exists?(f_path)
@@ -85,9 +85,9 @@ module Oxcelix
     def open(options={})
       f=IO.read(@destination + '/xl/workbook.xml')
       a=Ox::load(f)
-      
+
       sheetdata(a, options); commentsrel; shstrings;
-      
+
       @styles = Styles.new()
       File.open(@destination + '/xl/styles.xml', 'r') do |f|
         Ox.sax_parse(@styles, f)
@@ -134,7 +134,7 @@ module Oxcelix
       end
       matrixto options
     end
-    
+
     private
     # @private
     # Given the data found in workbook.xml, create a hash and push it to the sheets
@@ -174,7 +174,7 @@ module Oxcelix
       sheetarr=@sheets.map{|i| i[:name]}
       sheet_collection(sheetarr, options)
     end
-    
+
     # Build the array of working sheets based on the :include and :exclude parameters.
     # @param[sheetarr, options]
     def sheet_collection(sheetarr, options)
@@ -221,8 +221,8 @@ module Oxcelix
       end
       @sharedstrings=strings.stringarray
     end
-    
-    # Parses the comments related to the actual sheet.  
+
+    # Parses the comments related to the actual sheet.
     # @param [String] commentfile
     # @return [Array] a collection of comments relative to the Excel sheet currently processed
     def mkcomments(commentfile)
@@ -247,7 +247,7 @@ module Oxcelix
     # sheet), and after the only meaningful cell of the minor is found, it is
     # copied back to the remaining cells of the group. The coordinates (xlcoords)
     # of each copied cell is changed to reflect the actual Excel coordinate.
-    # 
+    #
     # The matrix will replace the array of cells in the actual sheet.
     # @param [Hash] options
     # @return [Matrix] a Matrix object that stores the cell values, and, depending on the copymerge parameter, will copy the merged value
@@ -280,12 +280,12 @@ module Oxcelix
       end
     end
 
-    # buildsheet creates a matrix of the needed size and fills it with the cells. Mainly for internal use only. 
+    # buildsheet creates a matrix of the needed size and fills it with the cells. Mainly for internal use only.
     # When paginating or parsing only a range of cells, the size of the matrix will be adjusted (no nil values
     # will be left at the beginning of the sheet), to preserve memory.
     # @param [Sheet] sheet the actual sheetarray.
     # @param [Hash] options :paginate or :cellrange will affect the size of the matrix
-    # @return [Sheet] a Sheet object that stores the cell values. 
+    # @return [Sheet] a Sheet object that stores the cell values.
     def buildsheet(sheet, options)
       ydiff, xdiff = 0,0
       if !options[:paginate].nil?
@@ -294,7 +294,7 @@ module Oxcelix
         xdiff = x(options[:cellrange].begin)
         ydiff = y(options[:cellrange].begin)
       end
-          
+
       m=Sheet.build(sheet[:cells].last.y+1-ydiff, sheet[:cells].last.x+1-xdiff) {nil}
       sheet[:cells].each do |c|
         m[c.y-ydiff, c.x-xdiff] = c
@@ -321,7 +321,7 @@ module Oxcelix
       end
     end
   end
-  
+
   # RawWorkbook is a Workbook that contains the raw values of the original Excel cells instead of Cell objects.
   # The values are taken from the Sheet arrays by running the #Cell::value method.
   class RawWorkbook < Workbook

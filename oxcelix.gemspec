@@ -19,8 +19,12 @@ Gem::Specification.new do |s|
 		  "lib/oxcelix/sax/*",
 		  "oxcelix.gemspec", "spec/*", ".yardopts", "CHANGES"].to_a
   s.license	= 'MIT'
-  
-  s.add_runtime_dependency "ox", [">= 2.0.6"]
+
+  s.add_runtime_dependency "ox",      [">= 2.1.7"]
   s.add_runtime_dependency "rubyzip", [">= 1.1.0"]
+  s.add_development_dependency "pry"
+  s.add_development_dependency "rake"
+  s.add_development_dependency "rspec"
+  s.add_development_dependency "oga"
   s.rdoc_options << '--all'
 end
