@@ -1,9 +1,9 @@
 module Oxcelix
-  module Numformats
-  	# Formatarray is the array of default format strings in Excel. Nil values should apparently contain CJK date format strings,
-  	#feel free to add/document those according to existing standards.
-  	Formatarray = [
-  	  {:id => '0', :xl => 'General', :ostring => nil, :cls => 'string'},
+	module Numformats
+		# Formatarray is the array of default format strings in Excel. Nil values should apparently contain CJK date format strings,
+		#feel free to add/document those according to existing standards.
+		Formatarray = [
+			{:id => '0', :xl => 'General', :ostring => nil, :cls => 'string'},
 			{:id => '1', :xl => '0', :ostring => '%1d', :cls => 'numeric'},
 			{:id => '2', :xl => '0.00', :ostring => '%1.2f', :cls => 'numeric'},
 			{:id => '3', :xl => '#,##0', :ostring => '%#4d', :cls => 'numeric'},
@@ -52,7 +52,7 @@ module Oxcelix
 			{:id => '46', :xl => '[h]:mm:ss', :ostring => '%-k:%M:%-S', :cls => 'date'},
 			{:id => '47', :xl => 'mmss.0', :ostring => '%M%-S.%1n', :cls => 'date'},
 			{:id => '48', :xl => '##0.0E+0', :ostring => '%#3.1E', :cls => 'numeric'},
-			{:id => '49', :xl => '@,', :ostring => '@%d', :cls => 'numeric'},
+			{:id => '49', :xl => 'Text', :ostring => nil, :cls => 'string'},
 			{:id => '50', :xl => '', :ostring => nil, :cls => 'string'},
 			{:id => '51', :xl => '', :ostring => nil, :cls => 'string'},
 			{:id => '52', :xl => '', :ostring => nil, :cls => 'string'},
@@ -167,6 +167,6 @@ module Oxcelix
 			{:id => '161', :xl => '', :ostring => nil, :cls => 'string'},
 			{:id => '162', :xl => '', :ostring => nil, :cls => 'string'},
 			{:id => '163', :xl => '', :ostring => nil, :cls => 'string'},
-	  ]
+		]
 	end
 end
