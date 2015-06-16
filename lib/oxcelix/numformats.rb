@@ -6,7 +6,7 @@ module Oxcelix
       Dtmap = {'hh'=>'%H', 'ii'=>'%M', 'i'=>'%-M', 'H'=>'%-k', 'h'=>'%-k',\
                     'ss'=>'%-S', 's'=>'%S', 'mmmmm'=>'%b', 'mmmm'=>'%B', 'mmm'=>'%b', 'mm'=>'%m', \
                     'm'=>'%-m', 'dddd'=>'%A', 'ddd'=>'%a', 'dd'=>'%d', 'd'=>'%-d', 'yyyy'=>'%Y', \
-                    'yy'=>'%y', 'AM/PM'=>'%p', 'A/P'=>'%p', '.0'=>'', 'ss'=>'%-S', 's'=>'%S'}
+                    'yy'=>'%y', 'AM/PM'=>'%p', 'A/P'=>'%p', '.0'=>''}
 
       # Convert the temporary format array (the collection of non-default number formatting strings defined in the excel sheet in use)
       # to a series of hashes containing an id, an excel format string, a converted format string and an object class the format is
