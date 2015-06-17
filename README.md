@@ -42,11 +42,13 @@ Synopsis
     `w.sheets[0].to_ru # returns a Matrix of DateTime, Integer, etc objects`
     `w.sheets[0].to_fmt # returns a Matrix of formatted Strings based on the above.`
   OR:
+  
     `require 'oxcelix'`
     `w = Oxcelix::RuValueWorkbook.new('whatever.xlsx', :copymerge => true)`
     `w = Oxcelix::FormattedWorkbook.new('whatever.xlsx', :copymerge => true)`
 
   You can parse an Excel file partially to save memory:
+  
     `require 'oxcelix'`
     `w = Oxcelix::Workbook.new('whatever.xlsx', :cellrange => ('A3'..'R42')) # will only parse the cells included in the given range on every included sheet`
     `w = Oxcelix::Workbook.new('whatever.xlsx', :paginate => [5,2]) # will only parse the second five-row group of every included sheet.`
