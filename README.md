@@ -74,6 +74,7 @@ For a comparison of XML parsers, please consult the Ox homepage[http://www.ohler
 
 TODO
 ----
+  * Support for inline strings to be added
   * include/exclude mechanism should extend to cell areas inside Sheet objects
   * Further improvement to the formatting algorithms. Theoretically, to_fmt should be able to
     split conditional-formatting strings and to display e.g. thousands separated number strings
