@@ -33,7 +33,7 @@ class Matrix
   end
 end
 
-class Fixnum
+class Integer
   # Returns the column name corresponding to the given number. e.g: 1.col_name => 'B'
   # @return [String]
   def col_name
