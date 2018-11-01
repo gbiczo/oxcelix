@@ -1,3 +1,10 @@
+0.4.2
+* fixed deprecation warning caused by ruby 2.4 Fixnum and Bignum unification
+  into Integer
+
+0.4.1
+* Fixed whitespaces around equality signs (Thanks to mindreframer)
+
 0.4.0
 * Code refactoring - Workbook creation is now more fine-grained.
 * Speedups: case statements replaced some complex and reoccurring
